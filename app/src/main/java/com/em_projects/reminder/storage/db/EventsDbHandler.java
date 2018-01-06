@@ -120,6 +120,7 @@ public class EventsDbHandler {
                     sql.insertOrThrow(DbConstants.EVENTS_TABLE_NAME, null, contentValues);
                 } catch (SQLException e) {
                     throw new SQLException(e.getMessage());
+                    // android.database.sqlite.SQLiteException: no such table: eventsTb (code 1): , while compiling: INSERT INTO eventsTb(events_duration,events_id,events_start_date,events_tune_name,events_alerts_interval,events_subject,events_animation_name,events_repeat_type) VALUES (?,?,?,?,?,?,?,?)
                 } finally {
                     sql.close();
                 }

@@ -10,7 +10,7 @@ public class DbConstants {
     // Events db properties
     public static final String EVENTS_TABLE_NAME = "eventsTb";                      // Table Name
 
-    public static final String EVENTS_ID = "events_id'";                            // INTEGER
+    public static final String EVENTS_ID = "events_id";                             // INTEGER
     public static final String EVENTS_SUBJECT = "events_subject";                   // TEXT
     public static final String EVENTS_START_DATE = "events_start_date";             // INTEGER
     public static final String EVENTS_DURATION = "events_duration";                 // INTEGER
@@ -21,7 +21,7 @@ public class DbConstants {
     public static final String EVENTS_TUNE_NAME = "events_tune_name";               // TEXT
 
     // Events DB
-    public static final String CREATE_COUNTRIES_TABLE =
+    public static final String CREATE_EVENTS_TABLE =
             "CREATE TABLE " + EVENTS_TABLE_NAME +
                     "("
                     + EVENTS_ID + " INTEGER PRIMARY KEY,"
@@ -32,9 +32,9 @@ public class DbConstants {
                     + EVENTS_ANIMATION_NAME + " TEXT,"
 //                    + EVENTS_NUMBER_OF_ALERTS + " INTEGER,"
                     + EVENTS_ALERTS_INTERVAL + " INTEGER,"
-                    + EVENTS_TUNE_NAME + " TEXR"
+                    + EVENTS_TUNE_NAME + " TEXT"
                     + ")";
 
-    public static final String DROP_COUNTRIES_TABLE =
+    public static final String DROP_EVENTS_TABLE =
             "DROP TABLE IF EXISTS " + EVENTS_TABLE_NAME;
 }
