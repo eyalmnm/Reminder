@@ -17,12 +17,12 @@ import java.util.Arrays;
 public class LoaderFromAssets {
 
     public static ArrayList<Drawable> getImagesByDir(Context context, String dirName) throws IOException {
-        String[] images = context.getAssets().list("images");
+        String[] images = context.getAssets().list(dirName);
         ArrayList<String> listImages = new ArrayList<String>(Arrays.asList(images));
 
         ArrayList<Drawable> drawables = new ArrayList<>(listImages.size());
         for (int position = 0; position < listImages.size(); position ++) {
-            InputStream inputstream = context.getAssets().open("images/"
+            InputStream inputstream = context.getAssets().open(dirName + "/"
                     + listImages.get(position));
             Drawable drawable = Drawable.createFromStream(inputstream, null);
             drawables.add(drawable);
