@@ -10,12 +10,10 @@ import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,10 +26,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.em_projects.reminder.alarm_mngr.AlarmManagerHelper;
+import com.em_projects.reminder.dialogs.AnimationPreviewDialog;
 import com.em_projects.reminder.externals.ReminderAlarmManagerService;
 import com.em_projects.reminder.fragments.DatePickerDialog;
 import com.em_projects.reminder.fragments.TimePickerDialog;
 import com.em_projects.reminder.model.Event;
+import com.em_projects.reminder.storage.db.DbConstants;
 import com.em_projects.reminder.storage.db.EventsDbHandler;
 import com.em_projects.reminder.ui.custom_text.CustomButton;
 import com.em_projects.reminder.ui.custom_text.CustomCheckBox;
@@ -43,7 +43,6 @@ import com.em_projects.reminder.ui.widgets.ringtonepicker.RingtonePickerListener
 import com.em_projects.reminder.utils.StringUtils;
 import com.em_projects.reminder.utils.TimeUtils;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -382,7 +381,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-        final ArrayList<String> animationOptions = genarateAnimationOptions();
+        final ArrayList<String> animationOptions = generateAnimationOptions();
         animationSelectionSpinnerAdapter = new SpinnerAdapter(this, R.layout.layout_spinner_view, animationOptions);
         animationSelectionSpinner.setAdapter(animationSelectionSpinnerAdapter);
         animationSelectionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -399,7 +398,8 @@ public class MainActivity extends AppCompatActivity implements
         animationPreviewButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                runAnimation(true);
+                //runAnimation(true);
+                showAnimationPreviewDialog(animationName);
             }
         });
         animationName = animationOptions.get(0);
@@ -521,16 +521,26 @@ public class MainActivity extends AppCompatActivity implements
 //        return soundOptions;
 //    }
 
-    private void runAnimation(boolean isPreview) {
-        Intent intent = new Intent(this, FloatingLayoutService.class);
-        String subject = subjectEditText.getText().toString();
-        if (true == StringUtils.isNullOrEmpty(subject)) subject = "Empty Subject";
-        intent.putExtra("subject", subject);
-        intent.putExtra("isPreview", isPreview);
-        startService(intent);
+//    private void runAnimation(boolean isPreview) {
+//        Intent intent = new Intent(this, FloatingLayoutService.class);
+//        String subject = subjectEditText.getText().toString();
+//        if (true == StringUtils.isNullOrEmpty(subject)) subject = "Empty Subject";
+//        intent.putExtra(DbConstants.EVENTS_SUBJECT, subject);
+//        intent.putExtra("isPreview", isPreview);
+//        intent.putExtra(DbConstants.EVENTS_ANIMATION_NAME, animationName);
+//        //startService(intent);
+//    }
+
+    private void showAnimationPreviewDialog(String animationName) {
+        Bundle args = new Bundle();
+        args.putString(DbConstants.EVENTS_ANIMATION_NAME, animationName);
+        FragmentManager fm = getFragmentManager();
+        AnimationPreviewDialog dialog = new AnimationPreviewDialog();
+        dialog.setArguments(args);
+        dialog.show(fm, "AnimationPreviewDialog");
     }
 
-    private ArrayList<String> genarateAnimationOptions() {
+    private ArrayList<String> generateAnimationOptions() {
         ArrayList<String> animtionOptions = new ArrayList<>();
         animtionOptions.add("bird");
         return animtionOptions;
