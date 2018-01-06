@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fadeScrollbars="false"
+    android:scrollbars="vertical">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="10dp">
+
+        <com.em_projects.reminder.ui.custom_text.CustomEditText
+            android:id="@+id/subjectEditText"
+            style="@style/activityMainTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="4dp"
+            android:focusableInTouchMode="true"
+            android:fontFamily="@font/caveat"
+            android:hint="@string/subject_et_hint"
+            android:imeOptions="actionNext"
+            android:inputType="text"
+            android:maxLines="1"
+            android:paddingBottom="11dp"
+            app:custom_font="caveat_regular" />
+
+        <com.em_projects.reminder.ui.custom_text.CustomTextView
+            android:id="@+id/calendarTitleTextView"
+            style="@style/activityMainTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/subjectEditText"
+            android:layout_marginTop="20dp"
+            android:text="@string/calendar_title_text"
+            app:custom_font="caveat_regular" />
+
+        <LinearLayout
+            android:id="@+id/calendarView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/calendarTitleTextView"
+            android:orientation="horizontal"
+            android:weightSum="150">
+
+            <com.em_projects.reminder.ui.custom_text.CustomTextView
+                android:id="@+id/dateTextView"
+                style="@style/activityMainTextStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="100"
+                android:gravity="left|center_vertical"
+                android:text="current date"
+                android:textSize="20sp"
+                app:custom_font="caveat_regular" />
+
+            <com.em_projects.reminder.ui.custom_text.CustomTextView
+                android:id="@+id/timeTextView"
+                style="@style/activityMainTextStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="50"
+                android:gravity="right|center_vertical"
+                android:text="time"
+                android:textSize="20dp"
+                app:custom_font="caveat_regular" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/eventDurationView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/calendarView"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
+
+            <com.em_projects.reminder.ui.custom_text.CustomTextView
+                style="@style/activityMainTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/duration_title_text"
+                app:custom_font="caveat_regular" />
+
+            <Spinner
+                android:id="@+id/eventDurationSpinner"
+                style="@style/activityMainTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusableInTouchMode="true"
+                android:fontFamily="@font/caveat"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:maxLines="1" />
+
+            <com.em_projects.reminder.ui.custom_text.CustomCheckBox
+                android:id="@+id/durationInHoursIndicator"
+                style="@style/activityMainTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/hours_spinner_title_text"
+                app:custom_font="caveat_regular" />
+
+            <Spinner
+                android:id="@+id/eventHoursDurationSpinner"
+                style="@style/activityMainTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusableInTouchMode="true"
+                android:fontFamily="@font/caveat"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:maxLines="1" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/eventRepeatView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/eventDurationView"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
+
+            <com.em_projects.reminder.ui.custom_text.CustomTextView
+                android:id="@+id/eventRepeatTextView"
+                style="@style/activityMainTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/event_repeat_title_text"
+                app:custom_font="caveat_regular" />
+
+            <Spinner
+                android:id="@+id/eventRepeatSpinner"
+                style="@style/activityMainTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusableInTouchMode="true"
+                android:fontFamily="@font/caveat"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:maxLines="1" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/eventAnimationView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/eventRepeatView"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
+
+            <com.em_projects.reminder.ui.custom_text.CustomTextView
+                style="@style/activityMainTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/animation_selection_title_text"
+                app:custom_font="caveat_regular" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="150">
+
+                <Spinner
+                    android:id="@+id/animationSelectionSpinner"
+                    style="@style/activityMainTextStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="115"
+                    android:focusableInTouchMode="true"
+                    android:fontFamily="@font/caveat"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:maxLines="1" />
+
+                <com.em_projects.reminder.ui.custom_text.CustomTextView
+                    android:id="@+id/animationPreviewButton"
+                    style="@style/activityMainTextStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="35"
+                    android:gravity="center"
+                    android:padding="2dp"
+                    android:text="@string/animation_preview_button_text"
+                    android:textSize="20sp"
+                    app:custom_font="caveat_regular" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/eventAlertRepeat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/eventAnimationView"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
+
+            <com.em_projects.reminder.ui.custom_text.CustomTextView
+                style="@style/activityMainTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/alert_repeat_title_text"
+                app:custom_font="caveat_regular" />
+
+            <RadioGroup
+                android:id="@+id/alertRepeatOptionsRadioGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.em_projects.reminder.ui.custom_text.CustomRadioButton
+                    android:id="@+id/everyMinuteRadioButton"
+                    style="@style/activityMainTextStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/every_minute_alert_option_text"
+                    android:textSize="20sp"
+                    app:custom_font="caveat_regular" />
+
+                <com.em_projects.reminder.ui.custom_text.CustomRadioButton
+                    android:id="@+id/everyThreeMinuteRadioButton"
+                    style="@style/activityMainTextStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/every_three_minute_alert_option_text"
+                    android:textSize="20sp"
+                    app:custom_font="caveat_regular" />
+
+                <com.em_projects.reminder.ui.custom_text.CustomRadioButton
+                    android:id="@+id/everyFiveMinuteRadioButton"
+                    style="@style/activityMainTextStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/every_five_minute_alert_option_text"
+                    android:textSize="20sp"
+                    app:custom_font="caveat_regular" />
+
+            </RadioGroup>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/addNoiseView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/eventAlertRepeat"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
+
+            <com.em_projects.reminder.ui.custom_text.CustomCheckBox
+                android:id="@+id/addSoundIndicator"
+                style="@style/activityMainTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/eventAlertRepeat"
+                android:layout_marginTop="20dp"
+                android:text="@string/add_sound_to_alert"
+                app:custom_font="caveat_regular" />
+
+            <com.em_projects.reminder.ui.custom_text.CustomTextView
+                android:id="@+id/soundSelectionTextView"
+                style="@style/activityMainTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusableInTouchMode="true"
+                android:fontFamily="@font/caveat"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:maxLines="1"
+                android:text="@string/silence_tone"
+                app:custom_font="caveat_regular"/>
+
+        </LinearLayout>
+
+        <com.em_projects.reminder.ui.custom_text.CustomButton
+            android:id="@+id/saveButton"
+            style="@style/activityMainTextStyle"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/addNoiseView"
+            android:layout_marginTop="20dp"
+            android:padding="2dp"
+            android:text="@string/save"
+            app:custom_font="caveat_regular" />
+
+        <com.em_projects.reminder.ui.custom_text.CustomButton
+            android:id="@+id/cancelButton"
+            style="@style/activityMainTextStyle"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/saveButton"
+            android:layout_alignParentRight="true"
+            android:padding="2dp"
+            android:text="@string/cancel"
+            app:custom_font="caveat_regular" />
+
+    </RelativeLayout>
+</ScrollView>

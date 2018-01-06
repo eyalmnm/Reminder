@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="duration_options">
+        <item>15 Minutes</item>
+        <item>30 Minutes</item>
+        <item>1 Hour</item>
+        <item>2 Hours</item>
+        <item>Whole day event</item>
+    </string-array>
+
+    <string-array name="duration_in_hours_options">
+        <item>2:30 Hours</item>
+        <item>3:00 Hours</item>
+        <item>3:30 Hours</item>
+        <item>4:00 Hours</item>
+        <item>4:30 Hours</item>
+        <item>5:00 Hours</item>
+        <item>5:30 Hours</item>
+        <item>6:00 Hours</item>
+        <item>6:30 Hours</item>
+        <item>7:00 Hours</item>
+        <item>7:30 Hours</item>
+        <item>8:00 Hours</item>
+        <item>8:30 Hours</item>
+        <item>9:00 Hours</item>
+        <item>9:30 Hours</item>
+        <item>10:00 Hours</item>
+        <item>10:30 Hours</item>
+        <item>11:00 Hours</item>
+        <item>11:30 Hours</item>
+        <item>12:00 Hours</item>
+    </string-array>
+
+    <string-array name="days_of_week">
+        <item>Sunday</item>
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
+        <item>Thursday</item>
+        <item>Friday</item>
+        <item>Saturday</item>
+    </string-array>
+
+    <string-array name="month_of_year">
+        <item>January</item>
+        <item>February</item>
+        <item>Mars</item>
+        <item>April</item>
+        <item>May</item>
+        <item>Juny</item>
+        <item>July</item>
+        <item>August</item>
+        <item>September</item>
+        <item>October</item>
+        <item>November</item>
+        <item>December</item>
+    </string-array>
+</resources>

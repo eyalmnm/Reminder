@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Reminder</string>
+
+    <!-- MainActivity -->
+    <string name="subject_et_hint">What should I remind you?</string>
+    <string name="calendar_title_text">Tell me When</string>
+    <string name="duration_title_text">How long will it take?</string>
+    <string name="hours_spinner_title_text">It will take hours</string>
+    <string name="event_repeat_title_text">Is it a weekly thing or a monthly or one time event?</string>
+    <string name="animation_selection_title_text">Who of ours friend would you like to remind you?</string>
+    <string name="animation_preview_button_text">Preview</string>
+    <string name="alert_repeat_title_text">how many time should I remind you?</string>
+    <string name="every_minute_alert_option_text">Every 1 Minute</string>
+    <string name="every_three_minute_alert_option_text">Every 3 Minutes</string>
+    <string name="every_five_minute_alert_option_text">Every 5 Minutes</string>
+    <string name="add_sound_to_alert">I\'d like to add some noise</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="empty_subject">Subject can not be empty</string>
+    <string name="silence_tone">Silence</string>
+</resources>
