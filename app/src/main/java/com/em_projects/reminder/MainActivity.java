@@ -14,6 +14,7 @@ import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -197,8 +198,9 @@ public class MainActivity extends AppCompatActivity implements
         dbHandler = EventsDbHandler.getInstance(this);
     }
 
+    // TODO For Debug only
     private void initAlarms() {
-//        Intent serviceIntent = new Intent(this, ReminderAlarmManagerService.class); // TODO
+//        Intent serviceIntent = new Intent(this, ReminderAlarmManagerService.class);
 //        startService(serviceIntent);
     }
 
@@ -434,7 +436,7 @@ public class MainActivity extends AppCompatActivity implements
                     Toast.makeText(context, R.string.empty_subject, Toast.LENGTH_LONG).show();
                     return;
                 }
-                if (0 < durationInHours) {
+                if (0 < durationInHours && durationInHoursIndicator.isChecked()) {
                     eventDuration = durationInHours;
                 }
                 Calendar calendar = Calendar.getInstance();
@@ -542,7 +544,30 @@ public class MainActivity extends AppCompatActivity implements
 
     private ArrayList<String> generateAnimationOptions() {
         ArrayList<String> animtionOptions = new ArrayList<>();
+        animtionOptions.add("bart_and_homer");
         animtionOptions.add("bird");
+        animtionOptions.add("brain");
+        animtionOptions.add("brat_and_lisa");
+        animtionOptions.add("coyote");
+        animtionOptions.add("eevee");
+        animtionOptions.add("going_my_way");
+        animtionOptions.add("itchy_and_scratchy");
+        animtionOptions.add("maggie");
+        animtionOptions.add("oddie");
+        animtionOptions.add("pegasus");
+        animtionOptions.add("peon");
+        animtionOptions.add("peter_pan");
+        animtionOptions.add("pikachu_plays");
+        animtionOptions.add("pikachu_walks");
+        animtionOptions.add("road_runner");
+        animtionOptions.add("rooster");
+        animtionOptions.add("smurf_jumps");
+        animtionOptions.add("sonic");
+        animtionOptions.add("spiderman");
+        animtionOptions.add("super_hero");
+        animtionOptions.add("tiger_jumping");
+        animtionOptions.add("tinker_bell");
+        animtionOptions.add("winnie_the_pooh");
         return animtionOptions;
     }
 

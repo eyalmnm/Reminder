@@ -50,8 +50,8 @@ public class ReminderAlarmManagerService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        setAlarms();
         context = this;
+        setAlarms();
         return START_STICKY;
     }
 

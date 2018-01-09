@@ -12,10 +12,10 @@ import java.util.Set;
 public class BundleUtils {
     private static final String TAG = "BundleUtils";
 
-    public static void printContent(Bundle bundle) {
+    public static void printContent(String tag, Bundle bundle) {
         Set<String> keys = bundle.keySet();
         for (String key: keys) {
-            Log.d(TAG, "key: " + key + " value: " + bundle.get(key));
+            Log.d(tag, "key: " + key + " value: " + bundle.get(key));
         }
     }
 }

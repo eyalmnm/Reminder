@@ -23,12 +23,13 @@ import android.widget.TextView;
 
 import com.em_projects.reminder.model.Event;
 import com.em_projects.reminder.storage.db.DbConstants;
+import com.em_projects.reminder.utils.BundleUtils;
 import com.em_projects.reminder.utils.StringUtils;
 
 import java.util.Calendar;
 
 /**
- * Created by eyalmuchtar on 12/2/17.
+ * Created by eyal muchtar on 12/2/17.
  */
 
 // Ref: https://stackoverflow.com/questions/2201917/how-can-i-open-a-url-in-androids-web-browser-from-my-application
@@ -55,8 +56,8 @@ public class FloatingLayoutService extends Service {
     private ImageView closeButton;
     private ImageView snoozeButton;
 
-    private boolean isPreview;
     private ValueAnimator translator;
+//    private boolean isRotating = false;
 
     private Intent intent;
 
@@ -110,7 +111,7 @@ public class FloatingLayoutService extends Service {
         display.getSize(size);
         x = size.x;
         y = size.y;
-        Log.d(TAG, "onAnimationUpdate end x: " + String.valueOf(x));
+        Log.d(TAG, "onCreate size.x: " + String.valueOf(x));
 
         collapsedView = mFloatingWidget.findViewById(R.id.collapse_view);
         animImageView = mFloatingWidget.findViewById(R.id.animImageView);
@@ -140,38 +141,48 @@ public class FloatingLayoutService extends Service {
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                stopSelf();
+                Log.d(TAG, "closeButton");
+                selfStop();
             }
         });
         snoozeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (false == isPreview)setOnetimeTimer(intent);
-                stopSelf();
+                Log.d(TAG, "snoozeButton");
+                setOnetimeTimer(intent);
+                selfStop();
             }
         });
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        long now = System.currentTimeMillis();
-        if (now >= intent.getLongExtra(DbConstants.EVENTS_START_DATE, 0)) {
-            long nextEvent = getNextStartDate(intent);
-            intent.putExtra(DbConstants.EVENTS_START_DATE, nextEvent);
-            setOnetimeTimer(intent, true);
+        Log.d(TAG, "onStartCommand");
+
+
+        if ((null == this.intent) ||
+                (false == this.intent.getStringExtra(DbConstants.EVENTS_ID).equalsIgnoreCase(intent.getStringExtra(DbConstants.EVENTS_ID)))) {
+            long now = System.currentTimeMillis();
+            this.intent = intent;
+            if (now >= intent.getLongExtra(DbConstants.EVENTS_START_DATE, 0)) {
+                Log.d(TAG, "onStartCommand - Setting new Start Date");
+                long nextEvent = getNextStartDate(intent);
+                intent.putExtra(DbConstants.EVENTS_START_DATE, nextEvent);
+                setOnetimeTimer(intent, true);
+            }
+            String subject = this.intent.getStringExtra(DbConstants.EVENTS_SUBJECT);
+            if (true == StringUtils.isNullOrEmpty(subject)) subject = "Empty Subject";
+            subjectTextView.setText(subject);
+
+
+            animate(mFloatingWidget, this.intent, 0, x, y / 2, y / 2);
         }
-        this.intent = intent;
-        String subject = this.intent.getStringExtra("subject");
-        if (true == StringUtils.isNullOrEmpty(subject)) subject = "Empty Subject";
-        subjectTextView.setText(subject);
-        isPreview = this.intent.getBooleanExtra("isPreview", false);
 
-        animate(mFloatingWidget, this.intent, 0, x, y / 2, y / 2);
-
-        return super.onStartCommand(intent, flags, startId);
+        return Service.START_NOT_STICKY;
     }
 
     private long getNextStartDate(Intent intent) {
+        Log.d(TAG, "getNextStartDate");
         Event.RepeatType repeatType = Event.getRepeatType(intent.getStringExtra(DbConstants.EVENTS_REPEAT_TYPE));
         long startTime = intent.getLongExtra(DbConstants.EVENTS_START_DATE, System.currentTimeMillis());
         Calendar calendar = Calendar.getInstance();
@@ -194,19 +205,22 @@ public class FloatingLayoutService extends Service {
     }
 
     public void setOnetimeTimer(Intent dataIntent) {
+        Log.d(TAG, "setOnetimeTimer the short");
         setOnetimeTimer(dataIntent, false);
     }
 
-    public void setOnetimeTimer(Intent dataIntent, boolean setNextAlert) {  // TODO Use AlarmManagerHelper
+    public void setOnetimeTimer(Intent dataIntent, boolean setNextAlert) {
         Log.d(TAG, "setOnetimeTimer");
-        int sessionRepeated = dataIntent.getIntExtra("sessionRepeated", -1);
         AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent eventIntent = new Intent(this, FloatingLayoutService.class);
-        eventIntent.getExtras().putAll(dataIntent.getExtras());
-        PendingIntent pi = PendingIntent.getService(this, 0, intent, 0);
-        long nextTime = System.currentTimeMillis() + dataIntent.getLongExtra(DbConstants.EVENTS_ALERTS_INTERVAL, MINUTE_MILIS);  // Next interval time
+        eventIntent.putExtras(dataIntent.getExtras());
+        PendingIntent pi = PendingIntent.getService(this, 0, eventIntent, 0);
+        long interval = dataIntent.getLongExtra(DbConstants.EVENTS_ALERTS_INTERVAL, MINUTE_MILIS);
+        Log.d(TAG, "setOnetimeTimer interval: " + interval);
+        long nextTime = System.currentTimeMillis() + interval;  // Next interval time
         if (setNextAlert) { // Next time event time
             nextTime = dataIntent.getLongExtra(DbConstants.EVENTS_START_DATE, MINUTE_MILIS);
+            //updateDb() // TODO
         }
         am.set(AlarmManager.RTC_WAKEUP, nextTime, pi);
     }
@@ -215,8 +229,8 @@ public class FloatingLayoutService extends Service {
         return mFloatingWidget == null || mFloatingWidget.findViewById(R.id.collapse_view).getVisibility() == View.VISIBLE;
     }
 
-    public void animate(final View v, final Intent intent, int startX, final int endX, int startY, int endY) {
-
+    public void animate(final View view, final Intent intent, int startX, final int endX, int startY, int endY) {
+        Log.d(TAG, "animate startX: " + startX + " endX: " + endX);
         PropertyValuesHolder pvhX = PropertyValuesHolder.ofInt("x", startX, endX);
         PropertyValuesHolder pvhY = PropertyValuesHolder.ofInt("y", startY, endY);
 
@@ -228,23 +242,34 @@ public class FloatingLayoutService extends Service {
                 int viewHeight = mFloatingWidget.getHeight() / 2;
                 int collapsed_iv_width = animImageView.getWidth();
 
-                WindowManager.LayoutParams layoutParams = (WindowManager.LayoutParams) v.getLayoutParams();
+                WindowManager.LayoutParams layoutParams = (WindowManager.LayoutParams) view.getLayoutParams();
                 layoutParams.x = (Integer) valueAnimator.getAnimatedValue("x");
                 layoutParams.y = (Integer) valueAnimator.getAnimatedValue("y") - viewHeight;
+//                Log.d(TAG, "onAnimationUpdate - update location x: " + layoutParams.x);
 
                 try {
-                    mWindowManager.updateViewLayout(v, layoutParams);
+                    mWindowManager.updateViewLayout(view, layoutParams);
                     if ((endX - collapsed_iv_width) <= layoutParams.x) {
+                        Log.d(TAG, "onAnimationUpdate - update location ending ");
+                        translator.cancel();
                         setOnetimeTimer(intent);
-                        FloatingLayoutService.this.stopSelf();
+                        FloatingLayoutService.this.selfStop();
                     }
                 } catch (Throwable tr) {
-                    Log.e(TAG, "onAnimationUpdate", tr);
+                    Log.e(TAG, "onAnimationUpdate x: " + params.x, tr);
+                    translator.cancel();
                 }
             }
         });
         translator.setDuration(5000);
         translator.start();
+    }
+
+    public void selfStop() {
+        Log.d(TAG, "selfStop");
+        if (null != translator) translator.cancel();
+        stopForeground(true);
+        stopSelf();
     }
 
     public static int dpToPx(int dp) {
