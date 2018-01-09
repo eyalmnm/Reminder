@@ -11,6 +11,9 @@ import android.content.res.Resources;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.Display;
@@ -20,18 +23,24 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.em_projects.reminder.loaders.LoaderFromAssets;
 import com.em_projects.reminder.model.Event;
 import com.em_projects.reminder.storage.db.DbConstants;
+import com.em_projects.reminder.ui.AnimationCreator;
 import com.em_projects.reminder.utils.BundleUtils;
 import com.em_projects.reminder.utils.StringUtils;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 /**
  * Created by eyal muchtar on 12/2/17.
  */
 
+// Ref: https://stackoverflow.com/questions/27473245/how-to-play-ringtone-sound-in-android-with-infinite-loop
 // Ref: https://stackoverflow.com/questions/2201917/how-can-i-open-a-url-in-androids-web-browser-from-my-application
 // Ref: http://code4reference.com/2012/07/tutorial-on-android-alarmmanager/
 // Ref: https://stackoverflow.com/questions/13820596/start-android-service-after-every-5-minutes
@@ -60,6 +69,7 @@ public class FloatingLayoutService extends Service {
 //    private boolean isRotating = false;
 
     private Intent intent;
+    private MediaPlayer mediaPlayer;
 
     private final static int MINUTE_MILIS = 60 * 1000;
 
@@ -126,6 +136,7 @@ public class FloatingLayoutService extends Service {
                 if (null != translator) {
                     translator.cancel();
                 }
+                stopMedia();
                 int viewHeight = mFloatingWidget.getHeight() / 2;
                 int viewWidth = dpToPx(150) / 2;
                 params.y = y / 2 - viewHeight;
@@ -155,6 +166,13 @@ public class FloatingLayoutService extends Service {
         });
     }
 
+    private void stopMedia() {
+        if (null != mediaPlayer) {
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
+    }
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand");
@@ -174,11 +192,31 @@ public class FloatingLayoutService extends Service {
             if (true == StringUtils.isNullOrEmpty(subject)) subject = "Empty Subject";
             subjectTextView.setText(subject);
 
+            String animationName = intent.getStringExtra(DbConstants.EVENTS_ANIMATION_NAME);
+            ArrayList<Drawable> drawables = null;
+            try {
+                drawables = LoaderFromAssets.getImagesByDir(this, animationName);
+                AnimationDrawable animDrawable = AnimationCreator.createAnimationDrawable(drawables, 50, false);
+                AnimationCreator.playAnimation(animImageView, animDrawable);
+            } catch (IOException e) {
+                Log.e(TAG, "onViewCreated", e);
+                Toast.makeText(this, "Failed to play animation", Toast.LENGTH_LONG).show();
+            }
+            String ringTone = intent.getStringExtra(DbConstants.EVENTS_TUNE_NAME);
+            if (false == "silence".equalsIgnoreCase(ringTone)) {
+                startMedia(ringTone);
+            }
 
             animate(mFloatingWidget, this.intent, 0, x, y / 2, y / 2);
         }
 
         return Service.START_NOT_STICKY;
+    }
+
+    private void startMedia(String ringTone) {
+        mediaPlayer = MediaPlayer.create(this, Uri.parse(ringTone));
+        mediaPlayer.setLooping(true);
+        mediaPlayer.start();
     }
 
     private long getNextStartDate(Intent intent) {
@@ -268,6 +306,7 @@ public class FloatingLayoutService extends Service {
     public void selfStop() {
         Log.d(TAG, "selfStop");
         if (null != translator) translator.cancel();
+        stopMedia();
         stopForeground(true);
         stopSelf();
     }
