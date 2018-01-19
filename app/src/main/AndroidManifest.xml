@@ -36,8 +36,15 @@
             </intent-filter>
         </receiver>
 
+        <!-- Event data display (the animation) -->
         <service
             android:name="com.em_projects.reminder.externals.ReminderAlarmManagerService" />
+
+        <!-- Events list Activity -->
+        <activity
+            android:name="com.em_projects.reminder.alerts_data.AlertsListActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
 
     </application>
 </manifest>
