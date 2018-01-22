@@ -40,11 +40,12 @@
         <service
             android:name="com.em_projects.reminder.externals.ReminderAlarmManagerService" />
 
-        <!-- Events list Activity -->
         <activity
             android:name="com.em_projects.reminder.alerts_data.AlertsListActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden"
+            android:theme="@style/myDialogTheme" />
+        <!-- Events list Activity -->
 
     </application>
 </manifest>
