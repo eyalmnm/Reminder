@@ -26,5 +26,8 @@
         <item name="android:textColorHint">@color/app_text_color</item>
     </style>
 
+    <style name="myDialogTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="windowNoTitle">true</item>
+    </style>
 
 </resources>

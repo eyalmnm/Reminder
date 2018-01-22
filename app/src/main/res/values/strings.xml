@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Reminder</string>
+    <string name="app_name" translatable="false">Reminder</string>
 
     <!-- MainActivity -->
     <string name="subject_et_hint">What should I remind you?</string>
@@ -7,6 +7,7 @@
     <string name="duration_title_text">How long will it take?</string>
     <string name="hours_spinner_title_text">It will take hours</string>
     <string name="event_repeat_title_text">Is it a weekly thing or a monthly or one time event?</string>
+    <string name="event_TimeBefore_title_text">How much time before I should notify?</string>
     <string name="animation_selection_title_text">Who of ours friend would you like to remind you?</string>
     <string name="animation_preview_button_text">Preview</string>
     <string name="alert_repeat_title_text">how many time should I remind you?</string>
@@ -18,4 +19,10 @@
     <string name="cancel">Cancel</string>
     <string name="empty_subject">Subject can not be empty</string>
     <string name="silence_tone">Silence</string>
+
+    <!-- Alerts List Dialog -->
+    <string name="alerts_list_title">Alerts List</string>
+    <string name="alerts_list_sub_title">Click to edit</string>
+    <string name="ok">Ok</string>
+    <string name="close">Close</string>
 </resources>

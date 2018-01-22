@@ -12,10 +12,20 @@
         android:layout_height="match_parent"
         android:padding="10dp">
 
+        <ImageButton
+            android:id="@+id/showAlertsImageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_event_available_black_24dp"
+            android:layout_alignParentRight="true"
+            android:visibility="invisible"/>
+
         <com.em_projects.reminder.ui.custom_text.CustomEditText
             android:id="@+id/subjectEditText"
             style="@style/activityMainTextStyle"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@id/showAlertsImageButton"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
             android:layout_marginTop="4dp"
@@ -145,10 +155,38 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/eventTimeBeforeView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/eventDurationView"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
+
+            <com.em_projects.reminder.ui.custom_text.CustomTextView
+                android:id="@+id/eventTimeBeforeTextView"
+                style="@style/activityMainTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/event_TimeBefore_title_text"
+                app:custom_font="caveat_regular" />
+
+            <Spinner
+                android:id="@+id/eventTimeBeforeSpinner"
+                style="@style/activityMainTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusableInTouchMode="true"
+                android:fontFamily="@font/caveat"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:maxLines="1" />
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/eventAnimationView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/eventRepeatView"
+            android:layout_below="@id/eventTimeBeforeView"
             android:layout_marginTop="20dp"
             android:orientation="vertical">
 
