@@ -14,19 +14,20 @@ import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.em_projects.reminder.alarm_mngr.AlarmManagerHelper;
+import com.em_projects.reminder.alerts_data.AlertsListActivity;
 import com.em_projects.reminder.dialogs.AnimationPreviewDialog;
 import com.em_projects.reminder.externals.ReminderAlarmManagerService;
 import com.em_projects.reminder.fragments.DatePickerDialog;
@@ -41,6 +42,7 @@ import com.em_projects.reminder.ui.custom_text.CustomRadioButton;
 import com.em_projects.reminder.ui.custom_text.CustomTextView;
 import com.em_projects.reminder.ui.widgets.ringtonepicker.RingtonePickerDialog;
 import com.em_projects.reminder.ui.widgets.ringtonepicker.RingtonePickerListener;
+import com.em_projects.reminder.utils.PreferencesUtils;
 import com.em_projects.reminder.utils.StringUtils;
 import com.em_projects.reminder.utils.TimeUtils;
 
@@ -68,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements
     private static final int PERMISSION_REQUEST_CODE = 456;
 
     private CustomEditText subjectEditText;
+    private ImageButton showAlertsImageButton;
 
     private CustomTextView dateTextView;
     private CustomTextView timeTextView;
@@ -153,6 +156,7 @@ public class MainActivity extends AppCompatActivity implements
         context = this;
 
         subjectEditText = findViewById(R.id.subjectEditText);
+        showAlertsImageButton = findViewById(R.id.showAlertsImageButton);
 
         dateTextView = findViewById(R.id.dateTextView);
         timeTextView = findViewById(R.id.timeTextView);
@@ -193,15 +197,13 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void continueAppLoading() {
-        initAlarms();
         initializeView();
         dbHandler = EventsDbHandler.getInstance(this);
     }
 
-    // TODO For Debug only
     private void initAlarms() {
-//        Intent serviceIntent = new Intent(this, ReminderAlarmManagerService.class);
-//        startService(serviceIntent);
+        Intent intent = new Intent(context, AlertsListActivity.class);
+        startActivity(intent);
     }
 
     private void initializeView() {
@@ -471,6 +473,19 @@ public class MainActivity extends AppCompatActivity implements
                 finish();
             }
         });
+
+        if (true == PreferencesUtils.getInstance(context).isFirstTime()) {
+            showAlertsImageButton.setVisibility(View.INVISIBLE);
+            PreferencesUtils.getInstance(context).setFirstTime(false);
+        } else {
+            showAlertsImageButton.setVisibility(View.VISIBLE);
+        }
+        showAlertsImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                initAlarms();
+            }
+        });
     }
 
     private void showRingTonePicker() {
@@ -675,10 +690,28 @@ public class MainActivity extends AppCompatActivity implements
                 Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
                 startActivityForResult(intent, PERM_REQUEST_CODE_DRAW_OVERLAYS);
             }
+        } else {
+            continueAppLoading();
         }
     }
 
-        public boolean hasPermissions(Context context, String... permissions) {
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (PERM_REQUEST_CODE_DRAW_OVERLAYS == requestCode) {  // ResultsCode is 0 in any case.
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (!Settings.canDrawOverlays(this)) {
+                    permissionToDrawOverlays();
+                } else {
+                    continueAppLoading();
+                }
+            } else {
+                continueAppLoading();
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public boolean hasPermissions(Context context, String... permissions) {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
             for (int i = 0; i < permissions.length; i++) {
                 if (ActivityCompat.checkSelfPermission(context, permissions[i]) != PackageManager.PERMISSION_GRANTED) {
