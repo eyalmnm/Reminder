@@ -7,7 +7,7 @@
     <string name="duration_title_text">How long will it take?</string>
     <string name="hours_spinner_title_text">It will take hours</string>
     <string name="event_repeat_title_text">Is it a weekly thing or a monthly or one time event?</string>
-    <string name="event_TimeBefore_title_text">How much time before I should notify?</string>
+    <string name="event_time_before_title_text">How much time before I should notify?</string>
     <string name="animation_selection_title_text">Who of ours friend would you like to remind you?</string>
     <string name="animation_preview_button_text">Preview</string>
     <string name="alert_repeat_title_text">how many time should I remind you?</string>
@@ -25,4 +25,16 @@
     <string name="alerts_list_sub_title">Click to edit</string>
     <string name="ok">Ok</string>
     <string name="close">Close</string>
+
+    <!-- Alert before options -->
+    <string name="on_time">On Time</string>
+    <string name="before_1_minute">1 Minute Before</string>
+    <string name="before_2_minutes">2 Minutes Before</string>
+    <string name="before_5_minutes">5 Minutes Before</string>
+    <string name="before_10_minutes">10 Minutes Before</string>
+    <string name="before_15_minutes">15 Minutes Before</string>
+    <string name="before_30_minutes">30 Minutes Before</string>
+    <string name="before_60_minutes">1 Hour Before</string>
+    <string name="before_120_minutes">2 Hours Before</string>
+
 </resources>

@@ -158,7 +158,7 @@
             android:id="@+id/eventTimeBeforeView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/eventDurationView"
+            android:layout_below="@id/eventRepeatView"
             android:layout_marginTop="20dp"
             android:orientation="vertical">
 
@@ -167,7 +167,7 @@
                 style="@style/activityMainTextStyle"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="@string/event_TimeBefore_title_text"
+                android:text="@string/event_time_before_title_text"
                 app:custom_font="caveat_regular" />
 
             <Spinner
