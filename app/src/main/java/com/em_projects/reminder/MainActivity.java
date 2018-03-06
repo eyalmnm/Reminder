@@ -125,6 +125,10 @@ public class MainActivity extends AppCompatActivity implements
     private static final int REPEAT_MONTHLY = 3;
     private static final int REPEAT_YEARLY = 4;
 
+    private Spinner eventTimeBeforeSpinner;
+    private SpinnerAdapter eventTimeBeforeSpinnerAdapter;
+    private long eventTimeBeforeSec;
+
     private Spinner animationSelectionSpinner;
     private CustomTextView animationPreviewButton;
     private SpinnerAdapter animationSelectionSpinnerAdapter;
@@ -166,6 +170,8 @@ public class MainActivity extends AppCompatActivity implements
         eventHoursDurationSpinner = findViewById(R.id.eventHoursDurationSpinner);
 
         eventRepeatSpinner = findViewById(R.id.eventRepeatSpinner);
+
+        eventTimeBeforeSpinner = findViewById(R.id.eventTimeBeforeSpinner);
 
         animationSelectionSpinner = findViewById(R.id.animationSelectionSpinner);
         animationPreviewButton = findViewById(R.id.animationPreviewButton);
@@ -385,6 +391,52 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
+        ArrayList<String> timeBeforeOptions = generateTimeBeforeOptions();
+        eventTimeBeforeSpinnerAdapter = new SpinnerAdapter(this, R.layout.layout_spinner_view, timeBeforeOptions);
+        eventTimeBeforeSpinner.setAdapter(eventTimeBeforeSpinnerAdapter);
+        eventTimeBeforeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                switch (position) {
+                    case 0:
+                        eventTimeBeforeSec = 0; // On Time
+                        break;
+                    case 1:
+                        eventTimeBeforeSec = 60; // 1 Min before
+                        break;
+                    case 3:
+                        eventTimeBeforeSec = 120; // 2 Min before
+                        break;
+                    case 4:
+                        eventTimeBeforeSec = 300; // 5 Min before
+                        break;
+                    case 5:
+                        eventTimeBeforeSec = 600; // 10 Min before
+                        break;
+                    case 6:
+                        eventTimeBeforeSec = 900; // 15 Min before
+                        break;
+                    case 7:
+                        eventTimeBeforeSec = 1800; // 30 Min before
+                        break;
+                    case 8:
+                        eventTimeBeforeSec = 3600; // 1 Hour before
+                        break;
+                    case 9:
+                        eventTimeBeforeSec = 7200; // 2 Hours before
+                        break;
+                        default:
+                            eventTimeBeforeSec = 0;
+                            break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Leave empty
+            }
+        });
+
         final ArrayList<String> animationOptions = generateAnimationOptions();
         animationSelectionSpinnerAdapter = new SpinnerAdapter(this, R.layout.layout_spinner_view, animationOptions);
         animationSelectionSpinner.setAdapter(animationSelectionSpinnerAdapter);
@@ -447,6 +499,9 @@ public class MainActivity extends AppCompatActivity implements
                     calendar.set(year, month, day, 0, 0);
                 } else {
                     calendar.set(year, month, day, hour, minute);
+                    if (0 < eventTimeBeforeSec) {
+                        calendar.add(Calendar.SECOND, (int)(-1 * eventTimeBeforeSec));
+                    }
                 }
                 long startDate = calendar.getTimeInMillis();
                 int radioButtonId = alertRepeatOptionsRadioGroup.getCheckedRadioButtonId();
@@ -555,6 +610,20 @@ public class MainActivity extends AppCompatActivity implements
         AnimationPreviewDialog dialog = new AnimationPreviewDialog();
         dialog.setArguments(args);
         dialog.show(fm, "AnimationPreviewDialog");
+    }
+
+    private ArrayList<String> generateTimeBeforeOptions() {
+        ArrayList<String> beforeOptions = new ArrayList<>();
+        beforeOptions.add(context.getString(R.string.on_time));
+        beforeOptions.add(context.getString(R.string.before_1_minute));
+        beforeOptions.add(context.getString(R.string.before_2_minutes));
+        beforeOptions.add(context.getString(R.string.before_5_minutes));
+        beforeOptions.add(context.getString(R.string.before_10_minutes));
+        beforeOptions.add(context.getString(R.string.before_15_minutes));
+        beforeOptions.add(context.getString(R.string.before_30_minutes));
+        beforeOptions.add(context.getString(R.string.before_60_minutes));
+        beforeOptions.add(context.getString(R.string.before_120_minutes));
+        return beforeOptions;
     }
 
     private ArrayList<String> generateAnimationOptions() {
