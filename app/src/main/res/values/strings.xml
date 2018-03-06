@@ -36,5 +36,6 @@
     <string name="before_30_minutes">30 Minutes Before</string>
     <string name="before_60_minutes">1 Hour Before</string>
     <string name="before_120_minutes">2 Hours Before</string>
+    <string name="event_starts_in_past">Event alraedy started! Please set another time.</string>
 
 </resources>
