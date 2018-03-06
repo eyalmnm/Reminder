@@ -6,6 +6,8 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.google.firebase.crash.FirebaseCrash;
+
 /**
  * * Created by eyalmuchtar on 12/19/17.
  */
@@ -24,6 +26,8 @@ public class EventsDbHelper extends SQLiteOpenHelper {
         try {
             db.execSQL(DbConstants.CREATE_EVENTS_TABLE);
         } catch (SQLiteException ex) {
+            FirebaseCrash.logcat(Log.ERROR, TAG, "onCreate");
+            FirebaseCrash.report(ex);
             Log.e(TAG, "Create table exception: " + ex.getMessage());
         }
     }

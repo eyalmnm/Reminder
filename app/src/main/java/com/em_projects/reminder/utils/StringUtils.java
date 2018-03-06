@@ -12,6 +12,8 @@ import android.util.Base64;
 import android.util.Log;
 import android.util.Patterns;
 
+import com.google.firebase.crash.FirebaseCrash;
+
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -82,6 +84,8 @@ public class StringUtils {
                 hexString.append(Integer.toHexString(0xFF & messageDigest[i]));
             return hexString.toString();
         } catch (NoSuchAlgorithmException e) {
+            FirebaseCrash.logcat(Log.ERROR, "StringUtils", "toMD5Str");
+            FirebaseCrash.report(e);
             e.printStackTrace();
         }
         return "";
@@ -179,6 +183,8 @@ public class StringUtils {
 //            return hexString.toString();
             return sb.toString();
         } catch (NoSuchAlgorithmException e) {
+            FirebaseCrash.logcat(Log.ERROR, "StringUtils", "toSha256Str");
+            FirebaseCrash.report(e);
             Log.e("StringUtils", "toSha256Str", e);
         }
         return "";

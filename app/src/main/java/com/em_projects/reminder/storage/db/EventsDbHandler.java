@@ -5,8 +5,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.em_projects.reminder.model.Event;
+import com.google.firebase.crash.FirebaseCrash;
 
 import java.util.ArrayList;
 
@@ -119,6 +121,8 @@ public class EventsDbHandler {
                 try {
                     sql.insertOrThrow(DbConstants.EVENTS_TABLE_NAME, null, contentValues);
                 } catch (SQLException e) {
+                    FirebaseCrash.logcat(Log.ERROR, TAG, "addEvent");
+                    FirebaseCrash.report(e);
                     throw new SQLException(e.getMessage());
                     // android.database.sqlite.SQLiteException: no such table: eventsTb (code 1): , while compiling: INSERT INTO eventsTb(events_duration,events_id,events_start_date,events_tune_name,events_alerts_interval,events_subject,events_animation_name,events_repeat_type) VALUES (?,?,?,?,?,?,?,?)
                 } finally {
@@ -143,6 +147,8 @@ public class EventsDbHandler {
             try {
                 sql.update(DbConstants.EVENTS_TABLE_NAME, contentValues, DbConstants.EVENTS_ID + "=?", new String[]{event.getId()});
             } catch (SQLException e) {
+                FirebaseCrash.logcat(Log.ERROR, TAG, "updateEvent");
+                FirebaseCrash.report(e);
                 throw new SQLException(e.getMessage());
             } finally {
                 sql.close();
@@ -157,6 +163,8 @@ public class EventsDbHandler {
             try {
                 sql.delete(DbConstants.EVENTS_TABLE_NAME, DbConstants.EVENTS_ID + "=?", new String[]{String.valueOf(event.getId())});
             } catch (SQLException e) {
+                FirebaseCrash.logcat(Log.ERROR, TAG, "deleteEvent");
+                FirebaseCrash.report(e);
                 throw new SQLException(e.getMessage());
             } finally {
                 sql.close();

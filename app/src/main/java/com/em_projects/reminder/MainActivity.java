@@ -14,6 +14,7 @@ import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -509,6 +510,8 @@ public class MainActivity extends AppCompatActivity implements
                     Toast.makeText(context, R.string.event_starts_in_past, Toast.LENGTH_LONG).show();
                     return;
                 }
+                String calendarTime = TimeUtils.timeToFormatedString(calendar.getTimeInMillis());
+                Log.d(TAG, "Time in calendar is: " + calendarTime);
                 int radioButtonId = alertRepeatOptionsRadioGroup.getCheckedRadioButtonId();
                 if (R.id.everyThreeMinuteRadioButton == radioButtonId) {
                     alertsInterval = 3 * MINUTE_MILLIS;

@@ -18,6 +18,7 @@ import com.em_projects.reminder.loaders.LoaderFromAssets;
 import com.em_projects.reminder.storage.db.DbConstants;
 import com.em_projects.reminder.ui.AnimationCreator;
 import com.em_projects.reminder.utils.StringUtils;
+import com.google.firebase.crash.FirebaseCrash;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -57,6 +58,8 @@ public class AnimationPreviewDialog extends DialogFragment implements View.OnCli
             animDrawable = AnimationCreator.createAnimationDrawable(drawables, 50, false);
             AnimationCreator.playAnimation(animationPreviewImageView, animDrawable);
         } catch (IOException e) {
+            FirebaseCrash.logcat(Log.ERROR, TAG, "onViewCreated");
+            FirebaseCrash.report(e);
             Log.e(TAG, "onViewCreated", e);
             Toast.makeText(getActivity(), "Failed to play animation", Toast.LENGTH_LONG).show();
         }
