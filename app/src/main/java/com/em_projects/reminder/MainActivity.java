@@ -503,7 +503,12 @@ public class MainActivity extends AppCompatActivity implements
                         calendar.add(Calendar.SECOND, (int)(-1 * eventTimeBeforeSec));
                     }
                 }
+                long now = System.currentTimeMillis();
                 long startDate = calendar.getTimeInMillis();
+                if (0 > (startDate - now)) {
+                    Toast.makeText(context, R.string.event_starts_in_past, Toast.LENGTH_LONG).show();
+                    return;
+                }
                 int radioButtonId = alertRepeatOptionsRadioGroup.getCheckedRadioButtonId();
                 if (R.id.everyThreeMinuteRadioButton == radioButtonId) {
                     alertsInterval = 3 * MINUTE_MILLIS;
