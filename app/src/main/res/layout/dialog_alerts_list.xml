@@ -40,9 +40,9 @@
         android:id="@+id/alertsListListView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
         android:layout_above="@id/alertsListButtonsLayout"
-        android:layout_below="@id/alertsListSubTitleTextView" />
+        android:layout_below="@id/alertsListSubTitleTextView"
+        android:layout_marginTop="20dp" />
 
     <LinearLayout
         android:id="@+id/alertsListButtonsLayout"
@@ -73,9 +73,9 @@
         android:layout_margin="10dp"
         android:foregroundGravity="center"
         android:src="@drawable/ic_alarm_add_black_24dp"
+        android:visibility="gone"
         app:layout_anchor="@id/alertsListListEmptyImage"
         app:layout_anchorGravity="bottom|right|end"
-        app:rippleColor="@android:color/transparent"
-        android:visibility="gone"/>
+        app:rippleColor="@android:color/transparent" />
 
 </RelativeLayout>

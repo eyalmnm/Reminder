@@ -1,28 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:fadeScrollbars="false"
     android:scrollbars="vertical">
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="10dp">
 
-        <ImageButton
-            android:id="@+id/showAlertsImageButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:src="@drawable/ic_event_available_black_24dp"
-            android:visibility="invisible" />
-
         <com.em_projects.reminder.ui.custom_text.CustomEditText
             android:id="@+id/subjectEditText"
             style="@style/activityMainTextStyle"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_marginBottom="5dp"
@@ -123,7 +115,6 @@
                 android:inputType="text"
                 android:maxLines="1" />
         </LinearLayout>
-
 
         <LinearLayout
             android:id="@+id/eventRepeatView"
@@ -226,7 +217,6 @@
                     android:textSize="20sp"
                     app:custom_font="caveat_regular" />
             </LinearLayout>
-
         </LinearLayout>
 
         <LinearLayout
@@ -276,9 +266,7 @@
                     android:text="@string/every_five_minute_alert_option_text"
                     android:textSize="20sp"
                     app:custom_font="caveat_regular" />
-
             </RadioGroup>
-
         </LinearLayout>
 
         <LinearLayout
