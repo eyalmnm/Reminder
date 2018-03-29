@@ -55,11 +55,14 @@ public class DatePickerDialog extends DialogFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-//        Typeface typeface = Typeface.createFromAsset(getActivity().getAssets(), "caveat_regular.ttf");
-
+        long date = -1;
+        Bundle args = getArguments();
+        if (null != args) {
+            date = args.getLong("data", -1);
+        }
         simpleDatePicker = view.findViewById(R.id.simpleDatePicker);
         simpleDatePicker.setSpinnersShown(false);
-        initDatePicker();
+        initDatePicker(date);
         saveButton = view.findViewById(R.id.saveButton);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,8 +83,11 @@ public class DatePickerDialog extends DialogFragment {
         });
     }
 
-    private void initDatePicker() {
+    private void initDatePicker(long date) {
         Calendar cal = Calendar.getInstance();
+        if (0 < date) {
+            cal.setTimeInMillis(date);
+        }
 
         int year = cal.get(Calendar.YEAR);
         int month = cal.get(Calendar.MONTH);

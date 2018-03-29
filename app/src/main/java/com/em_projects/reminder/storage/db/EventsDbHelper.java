@@ -17,7 +17,8 @@ public class EventsDbHelper extends SQLiteOpenHelper {
 
     // Constructor
     public EventsDbHelper(Context context) {
-        super(context, DbConstants.DB_NAME, null, 1);
+        super(context, DbConstants.DB_NAME,
+                null, DbConstants.DATABASE_VERSION);
     }
 
     @Override

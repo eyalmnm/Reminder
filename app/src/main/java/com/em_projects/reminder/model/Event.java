@@ -1,13 +1,16 @@
 package com.em_projects.reminder.model;
 
+import java.io.Serializable;
+
 /**
  * Created by eyalmuchtar on 12/19/17.
  */
 
-public class Event {
+public class Event implements Serializable {
 
     private String id;
     private String subject;
+    private long timeBeforeSec;      // seconds Alert before the event
     private long startDate;         // Date and time as milis
     private long duration;          // As milis  (includes all day)
     private String repeatType;      // Can be index of emun
@@ -18,12 +21,13 @@ public class Event {
 
     public enum RepeatType {NONE, DAILY, WEEKLY, MONTHLY, YEARLY}
 
-    public Event(String id, String subject, long startDate, long duration, RepeatType repeatType,
+    public Event(String id, String subject, long startDate, long duration, long timeBeforeSec, RepeatType repeatType,
                  String animationName, /*int numberOfAlerts,*/ long alertsInterval, String tuneName) {
         this.id = id;
         this.subject = subject;
         this.startDate = startDate;
         this.duration = duration;
+        this.timeBeforeSec = timeBeforeSec;
         this.repeatType = repeatType.name();
         this.animationName = animationName;
 //        this.numberOfAlerts = numberOfAlerts;
@@ -62,6 +66,15 @@ public class Event {
 //        return numberOfAlerts;
 //    }
 
+
+    public long getTimeBeforeSec() {
+        return timeBeforeSec;
+    }
+
+    public void setTimeBeforeSec(long timeBeforeSec) {
+        this.timeBeforeSec = timeBeforeSec;
+    }
+
     public long getAlertsInterval() {
         return alertsInterval;
     }
@@ -84,11 +97,11 @@ public class Event {
         return "Event{" +
                 "id='" + id + '\'' +
                 ", subject='" + subject + '\'' +
+                ", timeBeforeSec=" + timeBeforeSec +
                 ", startDate=" + startDate +
                 ", duration=" + duration +
                 ", repeatType='" + repeatType + '\'' +
                 ", animationName='" + animationName + '\'' +
-//                ", numberOfAlerts=" + numberOfAlerts +
                 ", alertsInterval=" + alertsInterval +
                 ", tuneName='" + tuneName + '\'' +
                 '}';
@@ -101,28 +114,28 @@ public class Event {
 
         Event event = (Event) o;
 
+        if (timeBeforeSec != event.timeBeforeSec) return false;
         if (startDate != event.startDate) return false;
         if (duration != event.duration) return false;
-//        if (numberOfAlerts != event.numberOfAlerts) return false;
         if (alertsInterval != event.alertsInterval) return false;
         if (!id.equals(event.id)) return false;
         if (!subject.equals(event.subject)) return false;
         if (!repeatType.equals(event.repeatType)) return false;
         if (!animationName.equals(event.animationName)) return false;
-        return tuneName != null ? tuneName.equals(event.tuneName) : event.tuneName == null;
+        return tuneName.equals(event.tuneName);
     }
 
     @Override
     public int hashCode() {
         int result = id.hashCode();
         result = 31 * result + subject.hashCode();
+        result = 31 * result + (int) (timeBeforeSec ^ (timeBeforeSec >>> 32));
         result = 31 * result + (int) (startDate ^ (startDate >>> 32));
         result = 31 * result + (int) (duration ^ (duration >>> 32));
         result = 31 * result + repeatType.hashCode();
         result = 31 * result + animationName.hashCode();
-//        result = 31 * result + numberOfAlerts;
         result = 31 * result + (int) (alertsInterval ^ (alertsInterval >>> 32));
-        result = 31 * result + (tuneName != null ? tuneName.hashCode() : 0);
+        result = 31 * result + tuneName.hashCode();
         return result;
     }
 }

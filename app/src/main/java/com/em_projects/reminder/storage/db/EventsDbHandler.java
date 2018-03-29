@@ -49,12 +49,13 @@ public class EventsDbHandler {
                 String subject = cursor.getString(cursor.getColumnIndex(DbConstants.EVENTS_SUBJECT));
                 long startDate = cursor.getLong(cursor.getColumnIndex(DbConstants.EVENTS_START_DATE));
                 long duration = cursor.getLong(cursor.getColumnIndex(DbConstants.EVENTS_DURATION));
+                long alertTimeBefore = cursor.getLong(cursor.getColumnIndex(DbConstants.EVENT_ALARM_SECONDS_BEFORE));
                 String repeatType = cursor.getString(cursor.getColumnIndex(DbConstants.EVENTS_REPEAT_TYPE));
                 String animationName = cursor.getString(cursor.getColumnIndex(DbConstants.EVENTS_ANIMATION_NAME));
 //                int numberOfAlerts = cursor.getInt(cursor.getColumnIndex(DbConstants.EVENTS_NUMBER_OF_ALERTS));
                 long alertsInterval = cursor.getLong(cursor.getColumnIndex(DbConstants.EVENTS_ALERTS_INTERVAL));
                 String tuneName = cursor.getString(cursor.getColumnIndex(DbConstants.EVENTS_TUNE_NAME));
-                Event event = new Event(String.valueOf(id), subject, startDate, duration,
+                Event event = new Event(String.valueOf(id), subject, startDate, duration, alertTimeBefore,
                         Event.getRepeatType(repeatType), animationName, /*numberOfAlerts,*/ alertsInterval, tuneName);
                 events.add(event);
             } while (cursor.moveToNext());
@@ -72,12 +73,13 @@ public class EventsDbHandler {
                 String subject = cursor.getString(cursor.getColumnIndex(DbConstants.EVENTS_SUBJECT));
                 long startDate = cursor.getLong(cursor.getColumnIndex(DbConstants.EVENTS_START_DATE));
                 long duration = cursor.getLong(cursor.getColumnIndex(DbConstants.EVENTS_DURATION));
+                long alertTimeBefore = cursor.getLong(cursor.getColumnIndex(DbConstants.EVENT_ALARM_SECONDS_BEFORE));
                 String repeatType = cursor.getString(cursor.getColumnIndex(DbConstants.EVENTS_REPEAT_TYPE));
                 String animationName = cursor.getString(cursor.getColumnIndex(DbConstants.EVENTS_ANIMATION_NAME));
 //                int numberOfAlerts = cursor.getInt(cursor.getColumnIndex(DbConstants.EVENTS_NUMBER_OF_ALERTS));
                 long alertsInterval = cursor.getLong(cursor.getColumnIndex(DbConstants.EVENTS_ALERTS_INTERVAL));
                 String tuneName = cursor.getString(cursor.getColumnIndex(DbConstants.EVENTS_TUNE_NAME));
-                Event event = new Event(String.valueOf(id), subject, startDate, duration,
+                Event event = new Event(String.valueOf(id), subject, startDate, duration, alertTimeBefore,
                         Event.getRepeatType(repeatType), animationName, /*numberOfAlerts,*/ alertsInterval, tuneName);
                 events.add(event);
             } while (cursor.moveToNext());
@@ -92,12 +94,13 @@ public class EventsDbHandler {
             String subject = cursor.getString(cursor.getColumnIndex(DbConstants.EVENTS_SUBJECT));
             long startDate = cursor.getLong(cursor.getColumnIndex(DbConstants.EVENTS_START_DATE));
             long duration = cursor.getLong(cursor.getColumnIndex(DbConstants.EVENTS_DURATION));
+            long alertTimeBefore = cursor.getLong(cursor.getColumnIndex(DbConstants.EVENT_ALARM_SECONDS_BEFORE));
             String repeatType = cursor.getString(cursor.getColumnIndex(DbConstants.EVENTS_REPEAT_TYPE));
             String animationName = cursor.getString(cursor.getColumnIndex(DbConstants.EVENTS_ANIMATION_NAME));
 //            int numberOfAlerts = cursor.getInt(cursor.getColumnIndex(DbConstants.EVENTS_NUMBER_OF_ALERTS));
             long alertsInterval = cursor.getLong(cursor.getColumnIndex(DbConstants.EVENTS_ALERTS_INTERVAL));
             String tuneName = cursor.getString(cursor.getColumnIndex(DbConstants.EVENTS_TUNE_NAME));
-            return new Event(id, subject, startDate, duration,
+            return new Event(id, subject, startDate, duration, alertTimeBefore,
                     Event.getRepeatType(repeatType), animationName, /*numberOfAlerts,*/ alertsInterval, tuneName);
         } else {
             return null;
@@ -112,6 +115,7 @@ public class EventsDbHandler {
                 contentValues.put(DbConstants.EVENTS_ID, event.getId());
                 contentValues.put(DbConstants.EVENTS_SUBJECT, event.getSubject());
                 contentValues.put(DbConstants.EVENTS_START_DATE, event.getStartDate());
+                contentValues.put(DbConstants.EVENT_ALARM_SECONDS_BEFORE, event.getTimeBeforeSec());
                 contentValues.put(DbConstants.EVENTS_DURATION, event.getDuration());
                 contentValues.put(DbConstants.EVENTS_REPEAT_TYPE, event.getRepeatType());
                 contentValues.put(DbConstants.EVENTS_ANIMATION_NAME, event.getAnimationName());
@@ -139,6 +143,7 @@ public class EventsDbHandler {
             contentValues.put(DbConstants.EVENTS_SUBJECT, event.getSubject());
             contentValues.put(DbConstants.EVENTS_START_DATE, event.getStartDate());
             contentValues.put(DbConstants.EVENTS_DURATION, event.getDuration());
+            contentValues.put(DbConstants.EVENT_ALARM_SECONDS_BEFORE, event.getTimeBeforeSec());
             contentValues.put(DbConstants.EVENTS_REPEAT_TYPE, event.getRepeatType());
             contentValues.put(DbConstants.EVENTS_ANIMATION_NAME, event.getAnimationName());
 //            contentValues.put(DbConstants.EVENTS_NUMBER_OF_ALERTS, event.getNumberOfAlerts());

@@ -1,6 +1,7 @@
 package com.em_projects.reminder.alerts_data;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -10,11 +11,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.em_projects.reminder.R;
+import com.em_projects.reminder.alarm_mngr.AlarmManagerHelper;
+import com.em_projects.reminder.dialogs.EditEventDialog;
+import com.em_projects.reminder.externals.ReminderAlarmManagerService;
 import com.em_projects.reminder.model.Event;
 import com.em_projects.reminder.storage.db.EventsDbHandler;
 import com.em_projects.reminder.ui.custom_text.CustomButton;
@@ -29,6 +34,8 @@ import java.util.ArrayList;
 
 public class AlertsListActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "AlertsListActivity";
+
+    private static final int EDIT_EVENT_REQUEST_CODE = 100;
 
     private CustomTextView alertsListTitleTextView;
     private CustomTextView alertsListSubTitleTextView;
@@ -70,6 +77,7 @@ public class AlertsListActivity extends AppCompatActivity implements View.OnClic
         events = EventsDbHandler.getInstance(this).getAll();
         adapter = new EventsListAdapter();
         alertsListListView.setAdapter(adapter);
+        alertsListListView.setOnItemClickListener(getOnItemClickListener());
         switchViews();
     }
 
@@ -105,6 +113,44 @@ public class AlertsListActivity extends AppCompatActivity implements View.OnClic
 
     private void addNewEvent() {
         // TODO do something here
+    }
+
+    private AdapterView.OnItemClickListener getOnItemClickListener() {
+        AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Event event = events.get(position);
+                Intent intent = new Intent(context, EditEventDialog.class);
+                intent.putExtra("event", event);
+                startActivityForResult(intent, EDIT_EVENT_REQUEST_CODE);
+            }
+        };
+        return onItemClickListener;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (EDIT_EVENT_REQUEST_CODE == requestCode && RESULT_OK == resultCode) {
+            Event editedEvent = (Event) data.getSerializableExtra("event");
+            Event orgEvent = (Event) data.getSerializableExtra("org_event");
+            if ((null != editedEvent) && (null != orgEvent)) {
+                if (false == orgEvent.equals(editedEvent)) {
+                    // Upade the data base
+                    EventsDbHandler.getInstance(context).updateEvent(editedEvent);
+                    // Remove the old alert
+                    Intent intent = ReminderAlarmManagerService.createIntentFromEvent(context, orgEvent);
+                    AlarmManagerHelper.unRegisterAlert(context, intent);
+                    // Add the new alert
+                    addToAlarmManager(context, editedEvent);
+                }
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void addToAlarmManager(Context context, Event event) {
+        Intent intent = ReminderAlarmManagerService.createIntentFromEvent(context, event);
+        AlarmManagerHelper.registerAlert(context, intent);
     }
 
     private class EventsListAdapter extends BaseAdapter {

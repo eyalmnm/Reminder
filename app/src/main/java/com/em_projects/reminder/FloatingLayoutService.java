@@ -3,6 +3,9 @@ package com.em_projects.reminder;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
@@ -14,7 +17,9 @@ import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
@@ -65,6 +70,9 @@ public class FloatingLayoutService extends Service {
     private ImageView closeButton;
     private ImageView snoozeButton;
 
+    private Point displaySize = new Point();
+    private WindowManager windowManager;
+
     private ValueAnimator translator;
 //    private boolean isRotating = false;
 
@@ -89,6 +97,48 @@ public class FloatingLayoutService extends Service {
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "onCreate");
+
+        // Start Foreground service
+        if (Build.VERSION.SDK_INT >= 26) {
+            String CHANNEL_ID = "remainder_channel_01";
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
+                    "Reminder Channel human readable title",
+                    NotificationManager.IMPORTANCE_DEFAULT);
+            ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).createNotificationChannel(channel);
+            Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+                    .setContentTitle("")
+                    .setContentText("").build();
+            startForeground(1, notification);
+        }
+
+        // Init UI
+        windowManager = (WindowManager) getApplicationContext().getSystemService(WINDOW_SERVICE);
+        windowManager.getDefaultDisplay().getSize(displaySize);
+
+        if (Build.VERSION.SDK_INT == 26) {
+            params = new WindowManager.LayoutParams(
+                    WindowManager.LayoutParams.WRAP_CONTENT,
+                    WindowManager.LayoutParams.WRAP_CONTENT,
+                    WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
+                            WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN |
+                            WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
+                            WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
+                            WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON,
+                    PixelFormat.TRANSPARENT);
+        } else {
+            params = new WindowManager.LayoutParams(
+                    WindowManager.LayoutParams.WRAP_CONTENT,
+                    WindowManager.LayoutParams.WRAP_CONTENT,
+                    WindowManager.LayoutParams.TYPE_SYSTEM_ERROR,
+                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
+                            WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN |
+                            WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
+                            WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
+                            WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
+                            WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON,
+                    PixelFormat.TRANSPARENT);
+        }
         mFloatingWidget = LayoutInflater.from(this).inflate(R.layout.layout_floating_layout, null);
 
 //        params = new WindowManager.LayoutParams(
@@ -98,17 +148,17 @@ public class FloatingLayoutService extends Service {
 //                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
 //                PixelFormat.TRANSLUCENT);
 
-        params = new WindowManager.LayoutParams(
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.TYPE_SYSTEM_ERROR,
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
-                        WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN |
-                        WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
-                        WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
-                        WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
-                        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON,
-                PixelFormat.TRANSPARENT);
+//        params = new WindowManager.LayoutParams(
+//                WindowManager.LayoutParams.WRAP_CONTENT,
+//                WindowManager.LayoutParams.WRAP_CONTENT,
+//                WindowManager.LayoutParams.TYPE_SYSTEM_ERROR,
+//                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
+//                        WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN |
+//                        WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
+//                        WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
+//                        WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
+//                        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON,
+//                PixelFormat.TRANSPARENT);
 
         params.gravity = Gravity.TOP | Gravity.LEFT;
         params.x = 0;

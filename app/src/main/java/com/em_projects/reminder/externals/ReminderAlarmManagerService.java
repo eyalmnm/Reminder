@@ -136,6 +136,7 @@ public class ReminderAlarmManagerService extends Service {
         intent.putExtra(DbConstants.EVENTS_SUBJECT, event.getSubject());
         intent.putExtra(DbConstants.EVENTS_START_DATE, event.getStartDate());
         intent.putExtra(DbConstants.EVENTS_DURATION, event.getDuration());
+        intent.putExtra(DbConstants.EVENT_ALARM_SECONDS_BEFORE, event.getTimeBeforeSec());
 //        intent.putExtra(DbConstants.EVENTS_NUMBER_OF_ALERTS, event.getNumberOfAlerts());
         intent.putExtra(DbConstants.EVENTS_ALERTS_INTERVAL, event.getAlertsInterval());
         intent.putExtra(DbConstants.EVENTS_ALERTS_INTERVAL, event.getAlertsInterval());

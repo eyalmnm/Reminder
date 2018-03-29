@@ -27,8 +27,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.em_projects.reminder.adapters.SpinnerAdapter;
 import com.em_projects.reminder.alarm_mngr.AlarmManagerHelper;
 import com.em_projects.reminder.alerts_data.AlertsListActivity;
+import com.em_projects.reminder.config.Data;
 import com.em_projects.reminder.dialogs.AnimationPreviewDialog;
 import com.em_projects.reminder.externals.ReminderAlarmManagerService;
 import com.em_projects.reminder.fragments.DatePickerDialog;
@@ -86,33 +88,33 @@ public class MainActivity extends AppCompatActivity implements
     private Spinner eventHoursDurationSpinner;
     private SpinnerAdapter eventDurationSpinnerAdapter;
     private SpinnerAdapter eventDurationInHoursSpinnerAdapter;
-    private static final long MINUTE_MILLIS = 60 * 1000;
-    private static final long HOUR_MILLIS = 60 * MINUTE_MILLIS;
-    private static final int MINUTES_15 = 0;
-    private static final int MINUTES_30 = 1;
-    private static final int MINUTES_60 = 2;
-    private static final int MINUTES_120 = 3;
-    private static final int WHOLE_DAY = 4;
-    private static final int HOURS_2_5 = 0;
-    private static final int HOURS_3_0 = 1;
-    private static final int HOURS_3_5 = 2;
-    private static final int HOURS_4_0 = 3;
-    private static final int HOURS_4_5 = 4;
-    private static final int HOURS_5_0 = 5;
-    private static final int HOURS_5_5 = 6;
-    private static final int HOURS_6_0 = 7;
-    private static final int HOURS_6_5 = 8;
-    private static final int HOURS_7_0 = 9;
-    private static final int HOURS_7_5 = 10;
-    private static final int HOURS_8_0 = 11;
-    private static final int HOURS_8_5 = 12;
-    private static final int HOURS_9_0 = 13;
-    private static final int HOURS_9_5 = 14;
-    private static final int HOURS_10_0 = 15;
-    private static final int HOURS_10_5 = 16;
-    private static final int HOURS_11_0 = 17;
-    private static final int HOURS_11_5 = 18;
-    private static final int HOURS_12_0 = 19;
+    public static final long MINUTE_MILLIS = 60 * 1000;
+    public static final long HOUR_MILLIS = 60 * MINUTE_MILLIS;
+    public static final int MINUTES_15 = 0;
+    public static final int MINUTES_30 = 1;
+    public static final int MINUTES_60 = 2;
+    public static final int MINUTES_120 = 3;
+    public static final int WHOLE_DAY = 4;
+    public static final int HOURS_2_5 = 0;
+    public static final int HOURS_3_0 = 1;
+    public static final int HOURS_3_5 = 2;
+    public static final int HOURS_4_0 = 3;
+    public static final int HOURS_4_5 = 4;
+    public static final int HOURS_5_0 = 5;
+    public static final int HOURS_5_5 = 6;
+    public static final int HOURS_6_0 = 7;
+    public static final int HOURS_6_5 = 8;
+    public static final int HOURS_7_0 = 9;
+    public static final int HOURS_7_5 = 10;
+    public static final int HOURS_8_0 = 11;
+    public static final int HOURS_8_5 = 12;
+    public static final int HOURS_9_0 = 13;
+    public static final int HOURS_9_5 = 14;
+    public static final int HOURS_10_0 = 15;
+    public static final int HOURS_10_5 = 16;
+    public static final int HOURS_11_0 = 17;
+    public static final int HOURS_11_5 = 18;
+    public static final int HOURS_12_0 = 19;
     private boolean wholeDay = false;
     private long duration = 0;
     private long durationInHours = 0;
@@ -120,11 +122,11 @@ public class MainActivity extends AppCompatActivity implements
     private Spinner eventRepeatSpinner;
     private SpinnerAdapter eventRepeatSpinnerAdapter;
     private Event.RepeatType repeatType = Event.RepeatType.NONE;
-    private static final int REPEAT_ONE_TIME = 0;
-    private static final int REPEAT_DAILY = 1;
-    private static final int REPEAT_WEEKLY = 2;
-    private static final int REPEAT_MONTHLY = 3;
-    private static final int REPEAT_YEARLY = 4;
+    public static final int REPEAT_ONE_TIME = 0;
+    public static final int REPEAT_DAILY = 1;
+    public static final int REPEAT_WEEKLY = 2;
+    public static final int REPEAT_MONTHLY = 3;
+    public static final int REPEAT_YEARLY = 4;
 
     private Spinner eventTimeBeforeSpinner;
     private SpinnerAdapter eventTimeBeforeSpinnerAdapter;
@@ -239,7 +241,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-        Resources resource = getResources();
+        Resources resource = context.getResources();
         ArrayList<String> durationOptions = new ArrayList<String>(Arrays.asList(resource.getStringArray(R.array.duration_options)));
         eventDurationSpinnerAdapter = new SpinnerAdapter(this, R.layout.layout_spinner_view, durationOptions);
         eventDurationSpinner.setAdapter(eventDurationSpinnerAdapter);
@@ -361,7 +363,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-        ArrayList<String> repeatOptins = generateRepeatOptions();
+        ArrayList<String> repeatOptins = Data.getInstance(context).generateRepeatOptions();
         eventRepeatSpinnerAdapter = new SpinnerAdapter(this, R.layout.layout_spinner_view, repeatOptins);
         eventRepeatSpinner.setAdapter(eventRepeatSpinnerAdapter);
         eventRepeatSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -392,7 +394,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-        ArrayList<String> timeBeforeOptions = generateTimeBeforeOptions();
+        ArrayList<String> timeBeforeOptions = Data.getInstance(context).generateTimeBeforeOptions();
         eventTimeBeforeSpinnerAdapter = new SpinnerAdapter(this, R.layout.layout_spinner_view, timeBeforeOptions);
         eventTimeBeforeSpinner.setAdapter(eventTimeBeforeSpinnerAdapter);
         eventTimeBeforeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -438,7 +440,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-        final ArrayList<String> animationOptions = generateAnimationOptions();
+        final ArrayList<String> animationOptions = Data.getInstance(context).generateAnimationOptions();
         animationSelectionSpinnerAdapter = new SpinnerAdapter(this, R.layout.layout_spinner_view, animationOptions);
         animationSelectionSpinner.setAdapter(animationSelectionSpinnerAdapter);
         animationSelectionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -500,13 +502,13 @@ public class MainActivity extends AppCompatActivity implements
                     calendar.set(year, month, day, 0, 0);
                 } else {
                     calendar.set(year, month, day, hour, minute);
-                    if (0 < eventTimeBeforeSec) {
-                        calendar.add(Calendar.SECOND, (int)(-1 * eventTimeBeforeSec));
-                    }
+//                    if (0 < eventTimeBeforeSec) {
+//                        calendar.add(Calendar.SECOND, (int)(-1 * eventTimeBeforeSec));
+//                    }
                 }
                 long now = System.currentTimeMillis();
                 long startDate = calendar.getTimeInMillis();
-                if (0 > (startDate - now)) {
+                if (0 > ((startDate - (eventTimeBeforeSec * 1000)) - now)) {
                     Toast.makeText(context, R.string.event_starts_in_past, Toast.LENGTH_LONG).show();
                     return;
                 }
@@ -520,10 +522,9 @@ public class MainActivity extends AppCompatActivity implements
                 } else {
                     alertsInterval = 1 * MINUTE_MILLIS;
                 }
-                Event event = new Event(id, subject, startDate, eventDuration, repeatType,
+                Event event = new Event(id, subject, startDate, eventDuration, eventTimeBeforeSec, repeatType,
                         animationName, /*numberOfAlerts,*/ alertsInterval, tuneName);
                 dbHandler.addEvent(event);
-                addToAlarmManager(context, event);
                 addToAlarmManager(context, event);
                 finish();
             }
@@ -620,61 +621,6 @@ public class MainActivity extends AppCompatActivity implements
         dialog.show(fm, "AnimationPreviewDialog");
     }
 
-    private ArrayList<String> generateTimeBeforeOptions() {
-        ArrayList<String> beforeOptions = new ArrayList<>();
-        beforeOptions.add(context.getString(R.string.on_time));
-        beforeOptions.add(context.getString(R.string.before_1_minute));
-        beforeOptions.add(context.getString(R.string.before_2_minutes));
-        beforeOptions.add(context.getString(R.string.before_5_minutes));
-        beforeOptions.add(context.getString(R.string.before_10_minutes));
-        beforeOptions.add(context.getString(R.string.before_15_minutes));
-        beforeOptions.add(context.getString(R.string.before_30_minutes));
-        beforeOptions.add(context.getString(R.string.before_60_minutes));
-        beforeOptions.add(context.getString(R.string.before_120_minutes));
-        return beforeOptions;
-    }
-
-    private ArrayList<String> generateAnimationOptions() {
-        ArrayList<String> animtionOptions = new ArrayList<>();
-        animtionOptions.add("bart_and_homer");
-        animtionOptions.add("bird");
-        animtionOptions.add("brain");
-        animtionOptions.add("brat_and_lisa");
-        animtionOptions.add("coyote");
-        animtionOptions.add("eevee");
-        animtionOptions.add("going_my_way");
-        animtionOptions.add("itchy_and_scratchy");
-        animtionOptions.add("maggie");
-        animtionOptions.add("oddie");
-        animtionOptions.add("pegasus");
-        animtionOptions.add("peon");
-        animtionOptions.add("peter_pan");
-        animtionOptions.add("pikachu_plays");
-        animtionOptions.add("pikachu_walks");
-        animtionOptions.add("road_runner");
-        animtionOptions.add("rooster");
-        animtionOptions.add("smurf_jumps");
-        animtionOptions.add("sonic");
-        animtionOptions.add("spiderman");
-        animtionOptions.add("super_hero");
-        animtionOptions.add("tiger_jumping");
-        animtionOptions.add("tinker_bell");
-        animtionOptions.add("winnie_the_pooh");
-        return animtionOptions;
-    }
-
-    private ArrayList<String> generateRepeatOptions() {
-        Calendar calendar = Calendar.getInstance(); // TODO Replace with calendar that creating the start date
-        String[] dayOfWeek = getResources().getStringArray(R.array.days_of_week);
-        String[] monthPfYear = getResources().getStringArray(R.array.month_of_year);
-        ArrayList<String> options = new ArrayList<>(5);
-        options.add("One time Event");
-        options.add("EveryDay - till i will terminate it");
-        options.add("Weekly - every " + dayOfWeek[calendar.get(Calendar.DAY_OF_WEEK) - 1]);
-        options.add("Monthly - every " + calendar.get(Calendar.DAY_OF_MONTH) + " on month");
-        options.add("Yearly - every " + calendar.get(Calendar.DAY_OF_MONTH) + " on " + monthPfYear[calendar.get(Calendar.MONTH)]);
-        return options;
-    }
 
     private void openTimePickerDialog() {
         FragmentManager fragmentManager = getFragmentManager();
@@ -798,44 +744,4 @@ public class MainActivity extends AppCompatActivity implements
         }
         return true;
     }
-
-
-    private class SpinnerAdapter extends ArrayAdapter<String> {
-
-        private int view;
-        private LayoutInflater inflater;
-        private Activity activity;
-        private ArrayList<String> data;
-
-        public SpinnerAdapter(Activity activity, int textViewResourceId, ArrayList<String> strings) {
-            super(activity, textViewResourceId, strings);
-
-            this.activity = activity;
-            data = strings;
-            view = textViewResourceId;
-            inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        }
-
-        @Override
-        public View getDropDownView(int position, View convertView, ViewGroup parent) {
-            return getCustomView(position, convertView, parent);
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            return getCustomView(position, convertView, parent);
-        }
-
-        private View getCustomView(int position, View convertView, ViewGroup parent) {
-            // Inflate spinner_adapter_opt_activity.xml file for each row
-            View row = inflater.inflate(view, parent, false);
-
-            TextView spinnerAdapterOptActivityTextView = (TextView) row.findViewById(R.id.spinnerAdapterOptActivityTextView);
-
-            spinnerAdapterOptActivityTextView.setText(data.get(position));
-
-            return row;
-        }
-    }
-
 }
