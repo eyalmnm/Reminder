@@ -289,8 +289,18 @@
             android:layout_marginTop="20dp"
             android:orientation="vertical">
 
-            <com.em_projects.reminder.ui.custom_text.CustomCheckBox
+            <!--com.em_projects.reminder.ui.custom_text.CustomCheckBox
                 android:id="@+id/addSoundIndicator"
+                style="@style/activityMainTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/eventAlertRepeat"
+                android:layout_marginTop="20dp"
+                android:text="@string/add_sound_to_alert"
+                app:custom_font="caveat_regular" /-->
+
+            <com.em_projects.reminder.ui.custom_text.CustomTextView
+                android:id="@+id/addSoundTitle"
                 style="@style/activityMainTextStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -304,9 +314,7 @@
                 style="@style/activityMainTextStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:focusableInTouchMode="true"
                 android:fontFamily="@font/caveat"
-                android:imeOptions="actionNext"
                 android:inputType="text"
                 android:maxLines="1"
                 android:text="@string/silence_tone"
