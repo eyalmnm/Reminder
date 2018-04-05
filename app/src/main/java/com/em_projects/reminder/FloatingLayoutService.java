@@ -64,6 +64,7 @@ public class FloatingLayoutService extends Service {
     private WindowManager mWindowManager;
     private View mFloatingWidget;
     private View collapsedView;
+    private TextView mainSubjectTextView;
     private ImageView animImageView;
     private View expandedView;
     private TextView subjectTextView;
@@ -174,6 +175,8 @@ public class FloatingLayoutService extends Service {
         Log.d(TAG, "onCreate size.x: " + String.valueOf(x));
 
         collapsedView = mFloatingWidget.findViewById(R.id.collapse_view);
+        mainSubjectTextView = mFloatingWidget.findViewById(R.id.mainSubjectTextView);
+        mainSubjectTextView.setText("");
         animImageView = mFloatingWidget.findViewById(R.id.animImageView);
         ((AnimationDrawable) animImageView.getBackground()).start();
 //        Animation rotateAnimation = AnimationUtils.loadAnimation(FloatingLayoutService.this, R.anim.rotation_anim);
@@ -240,6 +243,8 @@ public class FloatingLayoutService extends Service {
             }
             String subject = this.intent.getStringExtra(DbConstants.EVENTS_SUBJECT);
             if (true == StringUtils.isNullOrEmpty(subject)) subject = "Empty Subject";
+            mainSubjectTextView.setText(subject);
+            mainSubjectTextView.setSelected(true);
             subjectTextView.setText(subject);
 
             String animationName = intent.getStringExtra(DbConstants.EVENTS_ANIMATION_NAME);

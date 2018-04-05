@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements
     private CustomRadioButton everyFiveMinuteRadioButton;
     private long alertsInterval;
 
-    private CustomCheckBox addSoundIndicator;
+//    private CustomCheckBox addSoundIndicator;
     private CustomTextView soundSelectionTextView;
     private String tuneName;
 
@@ -186,9 +186,9 @@ public class MainActivity extends AppCompatActivity implements
         everyFiveMinuteRadioButton.setChecked(true);
         alertsInterval = 5 * MINUTE_MILLIS;
 
-        addSoundIndicator = findViewById(R.id.addSoundIndicator);
+//        addSoundIndicator = findViewById(R.id.addSoundIndicator);
         soundSelectionTextView = findViewById(R.id.soundSelectionTextView);
-        soundSelectionTextView.setVisibility(View.INVISIBLE);
+//        soundSelectionTextView.setVisibility(View.INVISIBLE);
 
         saveButton = findViewById(R.id.saveButton);
         cancelButton = findViewById(R.id.cancelButton);
@@ -463,18 +463,18 @@ public class MainActivity extends AppCompatActivity implements
         });
         animationName = animationOptions.get(0);
 
-        addSoundIndicator.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (true == isChecked) {
-                    soundSelectionTextView.setVisibility(View.VISIBLE);
-                } else {
-                    soundSelectionTextView.setVisibility(View.INVISIBLE);
-                    soundSelectionTextView.setText(null);
-                    tuneName = null;
-                }
-            }
-        });
+//        addSoundIndicator.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                if (true == isChecked) {
+//                    soundSelectionTextView.setVisibility(View.VISIBLE);
+//                } else {
+//                    soundSelectionTextView.setVisibility(View.INVISIBLE);
+//                    soundSelectionTextView.setText(null);
+//                    tuneName = null;
+//                }
+//            }
+//        });
         soundSelectionTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

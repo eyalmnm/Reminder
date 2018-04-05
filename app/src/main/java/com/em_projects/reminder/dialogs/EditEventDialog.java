@@ -1,7 +1,5 @@
 package com.em_projects.reminder.dialogs;
 
-import android.app.Activity;
-import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
@@ -13,14 +11,10 @@ import android.provider.OpenableColumns;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.ImageButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -32,7 +26,6 @@ import com.em_projects.reminder.config.Data;
 import com.em_projects.reminder.fragments.DatePickerDialog;
 import com.em_projects.reminder.fragments.TimePickerDialog;
 import com.em_projects.reminder.model.Event;
-import com.em_projects.reminder.storage.db.EventsDbHandler;
 import com.em_projects.reminder.ui.custom_text.CustomButton;
 import com.em_projects.reminder.ui.custom_text.CustomCheckBox;
 import com.em_projects.reminder.ui.custom_text.CustomEditText;
@@ -43,8 +36,6 @@ import com.em_projects.reminder.ui.widgets.ringtonepicker.RingtonePickerListener
 import com.em_projects.reminder.utils.StringUtils;
 import com.em_projects.reminder.utils.TimeUtils;
 
-import java.io.File;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -101,12 +92,13 @@ public class EditEventDialog extends AppCompatActivity implements View.OnClickLi
     private CustomRadioButton everyFiveMinuteRadioButton;
     private long alertsInterval;
 
-    private CustomCheckBox addSoundIndicator;
+    //    private CustomCheckBox addSoundIndicator;
     private CustomTextView soundSelectionTextView;
     private String tuneName;
 
     private CustomButton saveButton;
     private CustomButton cancelButton;
+    private CustomButton deleteButton;
 
     private Context context;
 
@@ -157,9 +149,9 @@ public class EditEventDialog extends AppCompatActivity implements View.OnClickLi
         everyFiveMinuteRadioButton.setChecked(true);
         alertsInterval = 5 * MainActivity.MINUTE_MILLIS;
 
-        addSoundIndicator = findViewById(R.id.addSoundIndicator);
+//        addSoundIndicator = findViewById(R.id.addSoundIndicator);
         soundSelectionTextView = findViewById(R.id.soundSelectionTextView);
-        soundSelectionTextView.setVisibility(View.INVISIBLE);
+//        soundSelectionTextView.setVisibility(View.INVISIBLE);
 
         saveButton = findViewById(R.id.saveButton);
         cancelButton = findViewById(R.id.cancelButton);
@@ -552,20 +544,28 @@ public class EditEventDialog extends AppCompatActivity implements View.OnClickLi
         animationSelectionSpinner.setSelection(position);
 
         tuneName = event.getTuneName();
-        if (true == StringUtils.isNullOrEmpty(tuneName)) {
-            addSoundIndicator.setChecked(false);
-            soundSelectionTextView.setVisibility(View.INVISIBLE);
-        } else {
-            addSoundIndicator.setChecked(true);
-            soundSelectionTextView.setVisibility(View.VISIBLE);
-            soundSelectionTextView.setText(getFileNameFromUri(tuneName));
-            soundSelectionTextView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    showRingTonePicker();
-                }
-            });
-        }
+        soundSelectionTextView.setText(getFileNameFromUri(tuneName));
+        soundSelectionTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showRingTonePicker();
+            }
+        });
+
+//        if (true == StringUtils.isNullOrEmpty(tuneName)) {
+//            addSoundIndicator.setChecked(false);
+//            soundSelectionTextView.setVisibility(View.INVISIBLE);
+//        } else {
+//            addSoundIndicator.setChecked(true);
+//            soundSelectionTextView.setVisibility(View.VISIBLE);
+//            soundSelectionTextView.setText(getFileNameFromUri(tuneName));
+//            soundSelectionTextView.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    showRingTonePicker();
+//                }
+//            });
+//        }
     }
 
     private String getFileNameFromUri(String tuneUriStr) {
@@ -578,7 +578,7 @@ public class EditEventDialog extends AppCompatActivity implements View.OnClickLi
             fileName = returnCursor.getString(nameIndex);
             Log.d(TAG, "file name : " + fileName);
             return fileName;
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.e(TAG, "getFileNameFromUri", e);
             //handle the failure cases here
         } finally {
@@ -678,7 +678,7 @@ public class EditEventDialog extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void onClick(View v) {
-        switch(v.getId()) {
+        switch (v.getId()) {
             case R.id.okButton:
                 Event editedEvent = createEvent();
                 if (null == editedEvent) {
