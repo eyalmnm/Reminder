@@ -81,6 +81,13 @@ public class AlertsListActivity extends AppCompatActivity implements View.OnClic
         switchViews();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        events = EventsDbHandler.getInstance(this).getAll();
+        adapter.notifyDataSetChanged();
+    }
+
     private void switchViews() {
         if (0 == events.size()) {
             alertsListListEmptyImage.setVisibility(View.VISIBLE);

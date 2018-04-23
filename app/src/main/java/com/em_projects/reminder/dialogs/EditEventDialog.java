@@ -544,28 +544,26 @@ public class EditEventDialog extends AppCompatActivity implements View.OnClickLi
         animationSelectionSpinner.setSelection(position);
 
         tuneName = event.getTuneName();
-        soundSelectionTextView.setText(getFileNameFromUri(tuneName));
+        if (false == StringUtils.isNullOrEmpty(tuneName)) {
+            String displayName = getFileNameFromUri(tuneName);
+            displayName = getTuneName(displayName);
+            soundSelectionTextView.setText(displayName);
+        }
         soundSelectionTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showRingTonePicker();
             }
         });
+    }
 
-//        if (true == StringUtils.isNullOrEmpty(tuneName)) {
-//            addSoundIndicator.setChecked(false);
-//            soundSelectionTextView.setVisibility(View.INVISIBLE);
-//        } else {
-//            addSoundIndicator.setChecked(true);
-//            soundSelectionTextView.setVisibility(View.VISIBLE);
-//            soundSelectionTextView.setText(getFileNameFromUri(tuneName));
-//            soundSelectionTextView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    showRingTonePicker();
-//                }
-//            });
-//        }
+    private String getTuneName(String tuneName) {
+        String name = tuneName;
+        int lastPointIdx = name.lastIndexOf('.');
+        if (0 < lastPointIdx) {
+            name = name.substring(0, lastPointIdx);
+        }
+        return name;
     }
 
     private String getFileNameFromUri(String tuneUriStr) {
@@ -679,7 +677,7 @@ public class EditEventDialog extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.okButton:
+            case R.id.saveButton:
                 Event editedEvent = createEvent();
                 if (null == editedEvent) {
                     return;
