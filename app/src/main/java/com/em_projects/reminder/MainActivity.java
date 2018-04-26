@@ -1,7 +1,6 @@
 package com.em_projects.reminder;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
@@ -15,16 +14,12 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.em_projects.reminder.adapters.SpinnerAdapter;
@@ -458,7 +453,8 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onClick(View v) {
                 //runAnimation(true);
-                showAnimationPreviewDialog(animationName);
+                //showAnimationPreviewDialog(animationName);
+                showEventOnScreen();
             }
         });
         animationName = animationOptions.get(0);
@@ -485,45 +481,7 @@ public class MainActivity extends AppCompatActivity implements
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //runAnimation(false);
-                String id = String.valueOf(System.currentTimeMillis());
-                String subject = subjectEditText.getText().toString();
-                long eventDuration = duration;
-                if (true == StringUtils.isNullOrEmpty(subject)) {
-                    Toast.makeText(context, R.string.empty_subject, Toast.LENGTH_LONG).show();
-                    return;
-                }
-                if (0 < durationInHours && durationInHoursIndicator.isChecked()) {
-                    eventDuration = durationInHours;
-                }
-                Calendar calendar = Calendar.getInstance();
-                calendar.set(year, month, day);
-                if (wholeDay) {
-                    calendar.set(year, month, day, 0, 0);
-                } else {
-                    calendar.set(year, month, day, hour, minute);
-//                    if (0 < eventTimeBeforeSec) {
-//                        calendar.add(Calendar.SECOND, (int)(-1 * eventTimeBeforeSec));
-//                    }
-                }
-                long now = System.currentTimeMillis();
-                long startDate = calendar.getTimeInMillis();
-                if (0 > ((startDate - (eventTimeBeforeSec * 1000)) - now)) {
-                    Toast.makeText(context, R.string.event_starts_in_past, Toast.LENGTH_LONG).show();
-                    return;
-                }
-                String calendarTime = TimeUtils.timeToFormatedString(calendar.getTimeInMillis());
-                Log.d(TAG, "Time in calendar is: " + calendarTime);
-                int radioButtonId = alertRepeatOptionsRadioGroup.getCheckedRadioButtonId();
-                if (R.id.everyThreeMinuteRadioButton == radioButtonId) {
-                    alertsInterval = 3 * MINUTE_MILLIS;
-                } else if (R.id.everyFiveMinuteRadioButton == radioButtonId) {
-                    alertsInterval = 5 * MINUTE_MILLIS;
-                } else {
-                    alertsInterval = 1 * MINUTE_MILLIS;
-                }
-                Event event = new Event(id, subject, startDate, eventDuration, eventTimeBeforeSec, repeatType,
-                        animationName, /*numberOfAlerts,*/ alertsInterval, tuneName);
+                Event event = createEvent();
                 dbHandler.addEvent(event);
                 addToAlarmManager(context, event);
                 finish();
@@ -550,6 +508,70 @@ public class MainActivity extends AppCompatActivity implements
                 initAlarms();
             }
         });
+    }
+
+    /**
+     * Just for preview
+     */
+    private void showEventOnScreen() {
+        Event event = createEvent();
+
+        if (null != event) {
+            Intent intent = new Intent(context, FloatingLayoutService.class);
+
+            intent.putExtra("isPreview", true);
+            intent.putExtra(DbConstants.EVENTS_ID, event.getId());
+            intent.putExtra(DbConstants.EVENTS_SUBJECT, event.getSubject());
+            intent.putExtra(DbConstants.EVENTS_START_DATE, event.getStartDate());
+            intent.putExtra(DbConstants.EVENTS_DURATION, event.getDuration());
+            intent.putExtra(DbConstants.EVENT_ALARM_SECONDS_BEFORE, event.getTimeBeforeSec());
+            intent.putExtra(DbConstants.EVENTS_ALERTS_INTERVAL, event.getAlertsInterval());
+            intent.putExtra(DbConstants.EVENTS_ALERTS_INTERVAL, event.getAlertsInterval());
+            intent.putExtra(DbConstants.EVENTS_REPEAT_TYPE, event.getRepeatType());
+            intent.putExtra(DbConstants.EVENTS_ANIMATION_NAME, event.getAnimationName());
+            intent.putExtra(DbConstants.EVENTS_TUNE_NAME, event.getTuneName());
+
+            startService(intent);
+        }
+    }
+
+    private Event createEvent() {
+        String id = String.valueOf(System.currentTimeMillis());
+        String subject = subjectEditText.getText().toString();
+        long eventDuration = duration;
+        if (true == StringUtils.isNullOrEmpty(subject)) {
+            Toast.makeText(context, R.string.empty_subject, Toast.LENGTH_LONG).show();
+            return null;
+        }
+        if (0 < durationInHours && durationInHoursIndicator.isChecked()) {
+            eventDuration = durationInHours;
+        }
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month, day);
+        if (wholeDay) {
+            calendar.set(year, month, day, 0, 0);
+        } else {
+            calendar.set(year, month, day, hour, minute);
+        }
+        long now = System.currentTimeMillis();
+        long startDate = calendar.getTimeInMillis();
+        if (0 > ((startDate - (eventTimeBeforeSec * 1000)) - now)) {
+            Toast.makeText(context, R.string.event_starts_in_past, Toast.LENGTH_LONG).show();
+            return null;
+        }
+        String calendarTime = TimeUtils.timeToFormatedString(calendar.getTimeInMillis());
+        Log.d(TAG, "Time in calendar is: " + calendarTime);
+        int radioButtonId = alertRepeatOptionsRadioGroup.getCheckedRadioButtonId();
+        if (R.id.everyThreeMinuteRadioButton == radioButtonId) {
+            alertsInterval = 3 * MINUTE_MILLIS;
+        } else if (R.id.everyFiveMinuteRadioButton == radioButtonId) {
+            alertsInterval = 5 * MINUTE_MILLIS;
+        } else {
+            alertsInterval = 1 * MINUTE_MILLIS;
+        }
+        Event event = new Event(id, subject, startDate, eventDuration, eventTimeBeforeSec, repeatType,
+                animationName, /*numberOfAlerts,*/ alertsInterval, tuneName);
+        return event;
     }
 
     private void showRingTonePicker() {

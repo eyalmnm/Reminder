@@ -34,7 +34,6 @@ import com.em_projects.reminder.loaders.LoaderFromAssets;
 import com.em_projects.reminder.model.Event;
 import com.em_projects.reminder.storage.db.DbConstants;
 import com.em_projects.reminder.ui.AnimationCreator;
-import com.em_projects.reminder.utils.BundleUtils;
 import com.em_projects.reminder.utils.StringUtils;
 
 import java.io.IOException;
@@ -142,25 +141,6 @@ public class FloatingLayoutService extends Service {
         }
         mFloatingWidget = LayoutInflater.from(this).inflate(R.layout.layout_floating_layout, null);
 
-//        params = new WindowManager.LayoutParams(
-//                WindowManager.LayoutParams.WRAP_CONTENT,
-//                WindowManager.LayoutParams.WRAP_CONTENT,
-//                WindowManager.LayoutParams.TYPE_PHONE,
-//                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-//                PixelFormat.TRANSLUCENT);
-
-//        params = new WindowManager.LayoutParams(
-//                WindowManager.LayoutParams.WRAP_CONTENT,
-//                WindowManager.LayoutParams.WRAP_CONTENT,
-//                WindowManager.LayoutParams.TYPE_SYSTEM_ERROR,
-//                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
-//                        WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN |
-//                        WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
-//                        WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
-//                        WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
-//                        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON,
-//                PixelFormat.TRANSPARENT);
-
         params.gravity = Gravity.TOP | Gravity.LEFT;
         params.x = 0;
         params.y = 100;
@@ -179,7 +159,6 @@ public class FloatingLayoutService extends Service {
         mainSubjectTextView.setText("");
         animImageView = mFloatingWidget.findViewById(R.id.animImageView);
         ((AnimationDrawable) animImageView.getBackground()).start();
-//        Animation rotateAnimation = AnimationUtils.loadAnimation(FloatingLayoutService.this, R.anim.rotation_anim);
         animImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -230,7 +209,6 @@ public class FloatingLayoutService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand");
 
-
         if ((null == this.intent) ||
                 (false == this.intent.getStringExtra(DbConstants.EVENTS_ID).equalsIgnoreCase(intent.getStringExtra(DbConstants.EVENTS_ID)))) {
             long now = System.currentTimeMillis();
@@ -269,9 +247,11 @@ public class FloatingLayoutService extends Service {
     }
 
     private void startMedia(String ringTone) {
-        mediaPlayer = MediaPlayer.create(this, Uri.parse(ringTone));
-        mediaPlayer.setLooping(true);
-        mediaPlayer.start();
+        if (false == StringUtils.isNullOrEmpty(ringTone)) {
+            mediaPlayer = MediaPlayer.create(this, Uri.parse(ringTone));
+            mediaPlayer.setLooping(true);
+            mediaPlayer.start();
+        }
     }
 
     private long getNextStartDate(Intent intent) {
@@ -303,19 +283,20 @@ public class FloatingLayoutService extends Service {
     }
 
     public void setOnetimeTimer(Intent dataIntent, boolean setNextAlert) {
-        Log.d(TAG, "setOnetimeTimer");
-        AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        Intent eventIntent = new Intent(this, FloatingLayoutService.class);
-        eventIntent.putExtras(dataIntent.getExtras());
-        PendingIntent pi = PendingIntent.getService(this, 0, eventIntent, 0);
-        long interval = dataIntent.getLongExtra(DbConstants.EVENTS_ALERTS_INTERVAL, MINUTE_MILIS);
-        Log.d(TAG, "setOnetimeTimer interval: " + interval);
-        long nextTime = System.currentTimeMillis() + interval;  // Next interval time
-        if (setNextAlert) { // Next time event time
-            nextTime = dataIntent.getLongExtra(DbConstants.EVENTS_START_DATE, MINUTE_MILIS);
-            //updateDb() // TODO
+        if (false == this.intent.getBooleanExtra("isPreview", false)) {
+            Log.d(TAG, "setOnetimeTimer");
+            AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            Intent eventIntent = new Intent(this, FloatingLayoutService.class);
+            eventIntent.putExtras(dataIntent.getExtras());
+            PendingIntent pi = PendingIntent.getService(this, 0, eventIntent, 0);
+            long interval = dataIntent.getLongExtra(DbConstants.EVENTS_ALERTS_INTERVAL, MINUTE_MILIS);
+            Log.d(TAG, "setOnetimeTimer interval: " + interval);
+            long nextTime = System.currentTimeMillis() + interval;  // Next interval time
+            if (setNextAlert) { // Next time event time
+                nextTime = dataIntent.getLongExtra(DbConstants.EVENTS_START_DATE, MINUTE_MILIS);
+            }
+            am.set(AlarmManager.RTC_WAKEUP, nextTime, pi);
         }
-        am.set(AlarmManager.RTC_WAKEUP, nextTime, pi);
     }
 
     private boolean isViewCollapsed() {
