@@ -1,7 +1,5 @@
 package com.em_projects.reminder.externals;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -26,17 +24,14 @@ import java.util.Calendar;
  */
 
 // Ref: http://stacktips.com/tutorials/android/repeat-alarm-example-in-android
-    
+
 public class ReminderAlarmManagerService extends Service {
     private static final String TAG = "RemainderAlarmMngrSrv";
 
     private EventsDbHandler dbHandler;
 
-    private AlarmManager am;
     private Context context;
 
-    // Thread's properties
-    private Looper serviceLopper;
     private Handler serviceHandler;
 
     @Override
@@ -44,7 +39,6 @@ public class ReminderAlarmManagerService extends Service {
         super.onCreate();
         Log.d(TAG, "onCreate");
         dbHandler = EventsDbHandler.getInstance(this);
-        am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         initHandler();
     }
 
@@ -58,7 +52,8 @@ public class ReminderAlarmManagerService extends Service {
     private void initHandler() {
         HandlerThread thread = new HandlerThread("OpenWeatherServiceThread", android.os.Process.THREAD_PRIORITY_BACKGROUND);
         thread.start();
-        serviceLopper = thread.getLooper();
+        // Thread's properties
+        Looper serviceLopper = thread.getLooper();
         serviceHandler = new Handler(serviceLopper);
     }
 
@@ -72,21 +67,13 @@ public class ReminderAlarmManagerService extends Service {
                 if (null != events && 0 < events.size()) {
 
                     long now = System.currentTimeMillis();
-                    String id, subject, animationName, tuneName;
-                    long startTime, duration, alertsInterval;
-//                    int numberOfAlerts;
+                    long startTime, duration;
                     Event.RepeatType repeatType;
 
-                    for (Event event: events) {
-                        id = event.getId();
-                        subject = event.getSubject();
+                    for (Event event : events) {
                         startTime = event.getStartDate();
                         duration = event.getDuration();
-//                        numberOfAlerts = event.getNumberOfAlerts();
-                        alertsInterval = event.getAlertsInterval();
                         repeatType = Event.getRepeatType(event.getRepeatType());
-                        animationName = event.getAnimationName();
-                        tuneName = event.getTuneName();
 
                         if (Event.RepeatType.NONE == repeatType && now > (startTime + duration /*+ (numberOfAlerts * alertsInterval)*/)) {
                             dbHandler.deleteEvent(event);
@@ -97,7 +84,7 @@ public class ReminderAlarmManagerService extends Service {
                         if (now < startTime) {
                             Log.d(TAG, "setOnetimeTimer");
                             Intent intent = createIntentFromEvent(context, event);
-                            registerAlert(context, intent);
+                            registerAlert(context, intent, Integer.parseInt(event.getId()));
                         }
 
                         // Set alert to next time
@@ -121,7 +108,7 @@ public class ReminderAlarmManagerService extends Service {
                             event.setStartDate(calendar.getTimeInMillis());
                             dbHandler.updateEvent(event);
                             Intent intent = createIntentFromEvent(context, event);
-                            registerAlert(context, intent);
+                            registerAlert(context, intent, Integer.parseInt(event.getId()));
                         }
                     }
                 }
@@ -148,8 +135,8 @@ public class ReminderAlarmManagerService extends Service {
         return intent;
     }
 
-    private void registerAlert(Context context, Intent intent) {
-        AlarmManagerHelper.registerAlert(context, intent);
+    private void registerAlert(Context context, Intent intent, int requestId) {
+        AlarmManagerHelper.registerAlert(context, intent, requestId);
     }
 
     @Override

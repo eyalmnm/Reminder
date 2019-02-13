@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -81,8 +82,6 @@ public class MainActivity extends AppCompatActivity implements
     private Spinner eventDurationSpinner;
     private CustomCheckBox durationInHoursIndicator;
     private Spinner eventHoursDurationSpinner;
-    private SpinnerAdapter eventDurationSpinnerAdapter;
-    private SpinnerAdapter eventDurationInHoursSpinnerAdapter;
     public static final long MINUTE_MILLIS = 60 * 1000;
     public static final long HOUR_MILLIS = 60 * MINUTE_MILLIS;
     public static final int MINUTES_15 = 0;
@@ -115,7 +114,6 @@ public class MainActivity extends AppCompatActivity implements
     private long durationInHours = 0;
 
     private Spinner eventRepeatSpinner;
-    private SpinnerAdapter eventRepeatSpinnerAdapter;
     private Event.RepeatType repeatType = Event.RepeatType.NONE;
     public static final int REPEAT_ONE_TIME = 0;
     public static final int REPEAT_DAILY = 1;
@@ -124,21 +122,16 @@ public class MainActivity extends AppCompatActivity implements
     public static final int REPEAT_YEARLY = 4;
 
     private Spinner eventTimeBeforeSpinner;
-    private SpinnerAdapter eventTimeBeforeSpinnerAdapter;
     private long eventTimeBeforeSec;
 
     private Spinner animationSelectionSpinner;
     private CustomTextView animationPreviewButton;
-    private SpinnerAdapter animationSelectionSpinnerAdapter;
     private String animationName;
 
     private RadioGroup alertRepeatOptionsRadioGroup;
-    private CustomRadioButton everyMinuteRadioButton;
-    private CustomRadioButton everyThreeMinuteRadioButton;
-    private CustomRadioButton everyFiveMinuteRadioButton;
     private long alertsInterval;
 
-//    private CustomCheckBox addSoundIndicator;
+    //    private CustomCheckBox addSoundIndicator;
     private CustomTextView soundSelectionTextView;
     private String tuneName;
 
@@ -175,9 +168,7 @@ public class MainActivity extends AppCompatActivity implements
         animationPreviewButton = findViewById(R.id.animationPreviewButton);
 
         alertRepeatOptionsRadioGroup = findViewById(R.id.alertRepeatOptionsRadioGroup);
-        everyMinuteRadioButton = findViewById(R.id.everyMinuteRadioButton);
-        everyThreeMinuteRadioButton = findViewById(R.id.everyThreeMinuteRadioButton);
-        everyFiveMinuteRadioButton = findViewById(R.id.everyFiveMinuteRadioButton);
+        CustomRadioButton everyFiveMinuteRadioButton = findViewById(R.id.everyFiveMinuteRadioButton);
         everyFiveMinuteRadioButton.setChecked(true);
         alertsInterval = 5 * MINUTE_MILLIS;
 
@@ -238,7 +229,7 @@ public class MainActivity extends AppCompatActivity implements
 
         Resources resource = context.getResources();
         ArrayList<String> durationOptions = new ArrayList<String>(Arrays.asList(resource.getStringArray(R.array.duration_options)));
-        eventDurationSpinnerAdapter = new SpinnerAdapter(this, R.layout.layout_spinner_view, durationOptions);
+        SpinnerAdapter eventDurationSpinnerAdapter = new SpinnerAdapter(this, R.layout.layout_spinner_view, durationOptions);
         eventDurationSpinner.setAdapter(eventDurationSpinnerAdapter);
         eventDurationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -253,7 +244,7 @@ public class MainActivity extends AppCompatActivity implements
                         duration = 30 * MINUTE_MILLIS;
                         break;
                     case MINUTES_60:
-                        duration = 1 * HOUR_MILLIS;
+                        duration = HOUR_MILLIS;
                         break;
                     case MINUTES_120:
                         duration = 2 * HOUR_MILLIS;
@@ -274,7 +265,7 @@ public class MainActivity extends AppCompatActivity implements
         durationInHoursIndicator.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (true == isChecked) {
+                if (isChecked) {
                     eventHoursDurationSpinner.setVisibility(View.VISIBLE);
                 } else {
                     durationInHours = 0;
@@ -284,7 +275,7 @@ public class MainActivity extends AppCompatActivity implements
         });
         eventHoursDurationSpinner.setVisibility(View.INVISIBLE);
         final ArrayList<String> durationInHoursOptions = new ArrayList<String>(Arrays.asList(resource.getStringArray(R.array.duration_in_hours_options)));
-        eventDurationInHoursSpinnerAdapter = new SpinnerAdapter(this, R.layout.layout_spinner_view, durationInHoursOptions);
+        SpinnerAdapter eventDurationInHoursSpinnerAdapter = new SpinnerAdapter(this, R.layout.layout_spinner_view, durationInHoursOptions);
         eventHoursDurationSpinner.setAdapter(eventDurationInHoursSpinnerAdapter);
         eventHoursDurationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -359,7 +350,7 @@ public class MainActivity extends AppCompatActivity implements
         });
 
         ArrayList<String> repeatOptins = Data.getInstance(context).generateRepeatOptions();
-        eventRepeatSpinnerAdapter = new SpinnerAdapter(this, R.layout.layout_spinner_view, repeatOptins);
+        SpinnerAdapter eventRepeatSpinnerAdapter = new SpinnerAdapter(this, R.layout.layout_spinner_view, repeatOptins);
         eventRepeatSpinner.setAdapter(eventRepeatSpinnerAdapter);
         eventRepeatSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -390,7 +381,7 @@ public class MainActivity extends AppCompatActivity implements
         });
 
         ArrayList<String> timeBeforeOptions = Data.getInstance(context).generateTimeBeforeOptions();
-        eventTimeBeforeSpinnerAdapter = new SpinnerAdapter(this, R.layout.layout_spinner_view, timeBeforeOptions);
+        SpinnerAdapter eventTimeBeforeSpinnerAdapter = new SpinnerAdapter(this, R.layout.layout_spinner_view, timeBeforeOptions);
         eventTimeBeforeSpinner.setAdapter(eventTimeBeforeSpinnerAdapter);
         eventTimeBeforeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -423,9 +414,9 @@ public class MainActivity extends AppCompatActivity implements
                     case 9:
                         eventTimeBeforeSec = 7200; // 2 Hours before
                         break;
-                        default:
-                            eventTimeBeforeSec = 0;
-                            break;
+                    default:
+                        eventTimeBeforeSec = 0;
+                        break;
                 }
             }
 
@@ -436,7 +427,7 @@ public class MainActivity extends AppCompatActivity implements
         });
 
         final ArrayList<String> animationOptions = Data.getInstance(context).generateAnimationOptions();
-        animationSelectionSpinnerAdapter = new SpinnerAdapter(this, R.layout.layout_spinner_view, animationOptions);
+        SpinnerAdapter animationSelectionSpinnerAdapter = new SpinnerAdapter(this, R.layout.layout_spinner_view, animationOptions);
         animationSelectionSpinner.setAdapter(animationSelectionSpinnerAdapter);
         animationSelectionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -483,7 +474,7 @@ public class MainActivity extends AppCompatActivity implements
             public void onClick(View v) {
                 Event event = createEvent();
                 dbHandler.addEvent(event);
-                addToAlarmManager(context, event);
+                addToAlarmManager(context, event, Integer.parseInt(event.getId()));
                 finish();
             }
         });
@@ -496,7 +487,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-        if (true == PreferencesUtils.getInstance(context).isFirstTime()) {
+        if (PreferencesUtils.getInstance(context).isFirstTime()) {
             showAlertsImageButton.setVisibility(View.INVISIBLE);
             PreferencesUtils.getInstance(context).setFirstTime(false);
         } else {
@@ -539,7 +530,7 @@ public class MainActivity extends AppCompatActivity implements
         String id = String.valueOf(System.currentTimeMillis());
         String subject = subjectEditText.getText().toString();
         long eventDuration = duration;
-        if (true == StringUtils.isNullOrEmpty(subject)) {
+        if (StringUtils.isNullOrEmpty(subject)) {
             Toast.makeText(context, R.string.empty_subject, Toast.LENGTH_LONG).show();
             return null;
         }
@@ -567,11 +558,10 @@ public class MainActivity extends AppCompatActivity implements
         } else if (R.id.everyFiveMinuteRadioButton == radioButtonId) {
             alertsInterval = 5 * MINUTE_MILLIS;
         } else {
-            alertsInterval = 1 * MINUTE_MILLIS;
+            alertsInterval = MINUTE_MILLIS;
         }
-        Event event = new Event(id, subject, startDate, eventDuration, eventTimeBeforeSec, repeatType,
+        return new Event(id, subject, startDate, eventDuration, eventTimeBeforeSec, repeatType,
                 animationName, /*numberOfAlerts,*/ alertsInterval, tuneName);
-        return event;
     }
 
     private void showRingTonePicker() {
@@ -612,9 +602,9 @@ public class MainActivity extends AppCompatActivity implements
         ringtonePickerBuilder.show();
     }
 
-    private void addToAlarmManager(Context context, Event event) {
+    private void addToAlarmManager(Context context, Event event, int requestId) {
         Intent intent = ReminderAlarmManagerService.createIntentFromEvent(context, event);
-        AlarmManagerHelper.registerAlert(context, intent);
+        AlarmManagerHelper.registerAlert(context, intent, requestId);
     }
 
 //    private ArrayList<String> generateSoundsOption() {
@@ -702,7 +692,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @TargetApi(Build.VERSION_CODES.M)
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
         switch (requestCode) {
             case PERMISSION_REQUEST_CODE:
                 if (grantResults.length > 0) {
@@ -758,8 +748,8 @@ public class MainActivity extends AppCompatActivity implements
 
     public boolean hasPermissions(Context context, String... permissions) {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
-            for (int i = 0; i < permissions.length; i++) {
-                if (ActivityCompat.checkSelfPermission(context, permissions[i]) != PackageManager.PERMISSION_GRANTED) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
                     return false;
                 }
             }

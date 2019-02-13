@@ -39,6 +39,7 @@ import com.em_projects.reminder.utils.StringUtils;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Objects;
 
 /**
  * Created by eyal muchtar on 12/2/17.
@@ -67,14 +68,10 @@ public class FloatingLayoutService extends Service {
     private ImageView animImageView;
     private View expandedView;
     private TextView subjectTextView;
-    private ImageView closeButton;
-    private ImageView snoozeButton;
 
     private Point displaySize = new Point();
-    private WindowManager windowManager;
 
     private ValueAnimator translator;
-//    private boolean isRotating = false;
 
     private Intent intent;
     private MediaPlayer mediaPlayer;
@@ -112,7 +109,7 @@ public class FloatingLayoutService extends Service {
         }
 
         // Init UI
-        windowManager = (WindowManager) getApplicationContext().getSystemService(WINDOW_SERVICE);
+        WindowManager windowManager = (WindowManager) getApplicationContext().getSystemService(WINDOW_SERVICE);
         windowManager.getDefaultDisplay().getSize(displaySize);
 
         if (Build.VERSION.SDK_INT == 26) {
@@ -141,7 +138,7 @@ public class FloatingLayoutService extends Service {
         }
         mFloatingWidget = LayoutInflater.from(this).inflate(R.layout.layout_floating_layout, null);
 
-        params.gravity = Gravity.TOP | Gravity.LEFT;
+        params.gravity = Gravity.TOP | Gravity.START;
         params.x = 0;
         params.y = 100;
         mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
@@ -178,8 +175,8 @@ public class FloatingLayoutService extends Service {
         });
         expandedView = mFloatingWidget.findViewById(R.id.expanded_container);
         subjectTextView = mFloatingWidget.findViewById(R.id.subjectTextView);
-        closeButton = (ImageView) mFloatingWidget.findViewById(R.id.closeButton);
-        snoozeButton = (ImageView) mFloatingWidget.findViewById(R.id.snoozeButton);
+        ImageView closeButton = mFloatingWidget.findViewById(R.id.closeButton);
+        ImageView snoozeButton = mFloatingWidget.findViewById(R.id.snoozeButton);
         subjectTextView.setText("");
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -210,7 +207,7 @@ public class FloatingLayoutService extends Service {
         Log.d(TAG, "onStartCommand");
 
         if ((null == this.intent) ||
-                (false == this.intent.getStringExtra(DbConstants.EVENTS_ID).equalsIgnoreCase(intent.getStringExtra(DbConstants.EVENTS_ID)))) {
+                (!this.intent.getStringExtra(DbConstants.EVENTS_ID).equalsIgnoreCase(intent.getStringExtra(DbConstants.EVENTS_ID)))) {
             long now = System.currentTimeMillis();
             this.intent = intent;
             if (now >= intent.getLongExtra(DbConstants.EVENTS_START_DATE, 0)) {
@@ -220,7 +217,7 @@ public class FloatingLayoutService extends Service {
                 setOnetimeTimer(intent, true);
             }
             String subject = this.intent.getStringExtra(DbConstants.EVENTS_SUBJECT);
-            if (true == StringUtils.isNullOrEmpty(subject)) subject = "Empty Subject";
+            if (StringUtils.isNullOrEmpty(subject)) subject = "Empty Subject";
             mainSubjectTextView.setText(subject);
             mainSubjectTextView.setSelected(true);
             subjectTextView.setText(subject);
@@ -236,7 +233,7 @@ public class FloatingLayoutService extends Service {
                 Toast.makeText(this, "Failed to play animation", Toast.LENGTH_LONG).show();
             }
             String ringTone = intent.getStringExtra(DbConstants.EVENTS_TUNE_NAME);
-            if (false == "silence".equalsIgnoreCase(ringTone)) {
+            if (!"silence".equalsIgnoreCase(ringTone)) {
                 startMedia(ringTone);
             }
 
@@ -247,7 +244,7 @@ public class FloatingLayoutService extends Service {
     }
 
     private void startMedia(String ringTone) {
-        if (false == StringUtils.isNullOrEmpty(ringTone)) {
+        if (!StringUtils.isNullOrEmpty(ringTone)) {
             mediaPlayer = MediaPlayer.create(this, Uri.parse(ringTone));
             mediaPlayer.setLooping(true);
             mediaPlayer.start();
@@ -283,11 +280,11 @@ public class FloatingLayoutService extends Service {
     }
 
     public void setOnetimeTimer(Intent dataIntent, boolean setNextAlert) {
-        if (false == this.intent.getBooleanExtra("isPreview", false)) {
+        if (!this.intent.getBooleanExtra("isPreview", false)) {
             Log.d(TAG, "setOnetimeTimer");
             AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
             Intent eventIntent = new Intent(this, FloatingLayoutService.class);
-            eventIntent.putExtras(dataIntent.getExtras());
+            eventIntent.putExtras(Objects.requireNonNull(dataIntent.getExtras()));
             PendingIntent pi = PendingIntent.getService(this, 0, eventIntent, 0);
             long interval = dataIntent.getLongExtra(DbConstants.EVENTS_ALERTS_INTERVAL, MINUTE_MILIS);
             Log.d(TAG, "setOnetimeTimer interval: " + interval);

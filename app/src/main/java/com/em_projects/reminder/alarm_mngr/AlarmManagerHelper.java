@@ -13,18 +13,19 @@ import com.em_projects.reminder.storage.db.DbConstants;
 
 public class AlarmManagerHelper {
 
-    public static void registerAlert(Context context, Intent intent) {
+    public static void registerAlert(Context context, Intent intent, int requestCode) {
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        PendingIntent pi = PendingIntent.getService(context, 0, intent, 0);
+        PendingIntent pi = PendingIntent.getService(context, requestCode, intent, 0);
         long timeBefore = intent.getLongExtra(DbConstants.EVENT_ALARM_SECONDS_BEFORE, 0);
         long startTime = intent.getLongExtra(DbConstants.EVENTS_START_DATE, System.currentTimeMillis());
         long calculatedTime = startTime - (timeBefore * 1000);
         am.set(AlarmManager.RTC_WAKEUP, calculatedTime, pi);
     }
 
-    public static void unRegisterAlert(Context context, Intent intent) {
+    public static void unRegisterAlert(Context context, Intent intent, int requestCode) {
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        PendingIntent pi = PendingIntent.getService(context, 0, intent, 0);
+        PendingIntent pi = PendingIntent.getService(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
         am.cancel(pi);
     }
 

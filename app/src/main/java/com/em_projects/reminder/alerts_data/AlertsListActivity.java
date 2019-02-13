@@ -3,7 +3,6 @@ package com.em_projects.reminder.alerts_data;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -37,7 +36,6 @@ public class AlertsListActivity extends AppCompatActivity implements View.OnClic
 
     private static final int EDIT_EVENT_REQUEST_CODE = 100;
 
-    private CustomTextView alertsListTitleTextView;
     private CustomTextView alertsListSubTitleTextView;
     private ImageView alertsListListEmptyImage;
     private ListView alertsListListView;
@@ -49,7 +47,6 @@ public class AlertsListActivity extends AppCompatActivity implements View.OnClic
 
     private Context context;
 
-    @Nullable
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +55,6 @@ public class AlertsListActivity extends AppCompatActivity implements View.OnClic
         Log.d(TAG, "onCreate");
         context = this;
 
-        alertsListTitleTextView = findViewById(R.id.alertsListTitleTextView);
         alertsListSubTitleTextView = findViewById(R.id.alertsListSubTitleTextView);
         alertsListListEmptyImage = findViewById(R.id.alertsListListEmptyImage);
         alertsListListView = findViewById(R.id.alertsListListView);
@@ -123,7 +119,7 @@ public class AlertsListActivity extends AppCompatActivity implements View.OnClic
     }
 
     private AdapterView.OnItemClickListener getOnItemClickListener() {
-        AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
+        return new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Event event = events.get(position);
@@ -132,7 +128,6 @@ public class AlertsListActivity extends AppCompatActivity implements View.OnClic
                 startActivityForResult(intent, EDIT_EVENT_REQUEST_CODE);
             }
         };
-        return onItemClickListener;
     }
 
     @Override
@@ -141,12 +136,12 @@ public class AlertsListActivity extends AppCompatActivity implements View.OnClic
             Event editedEvent = (Event) data.getSerializableExtra("event");
             Event orgEvent = (Event) data.getSerializableExtra("org_event");
             if ((null != editedEvent) && (null != orgEvent)) {
-                if (false == orgEvent.equals(editedEvent)) {
+                if (!orgEvent.equals(editedEvent)) {
                     // Upade the data base
                     EventsDbHandler.getInstance(context).updateEvent(editedEvent);
                     // Remove the old alert
                     Intent intent = ReminderAlarmManagerService.createIntentFromEvent(context, orgEvent);
-                    AlarmManagerHelper.unRegisterAlert(context, intent);
+                    AlarmManagerHelper.unRegisterAlert(context, intent, Integer.parseInt(orgEvent.getId()));
                     // Add the new alert
                     addToAlarmManager(context, editedEvent);
                 }
@@ -157,7 +152,7 @@ public class AlertsListActivity extends AppCompatActivity implements View.OnClic
 
     private void addToAlarmManager(Context context, Event event) {
         Intent intent = ReminderAlarmManagerService.createIntentFromEvent(context, event);
-        AlarmManagerHelper.registerAlert(context, intent);
+        AlarmManagerHelper.registerAlert(context, intent, Integer.parseInt(event.getId()));
     }
 
     private class EventsListAdapter extends BaseAdapter {
