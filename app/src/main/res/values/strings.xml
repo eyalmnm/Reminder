@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name" translatable="false">Reminder</string>
 
+    <!-- Ad Mov -->
+    <string name="banner_ad_unit_id">ca-app-pub-4376965998620656~4770310259</string>
+    <string name="banner_ad_unit_id_reward">ca-app-pub-4376965998620656/5415632922</string>
+
     <!-- MainActivity -->
     <string name="subject_et_hint">What should I remind you?</string>
     <string name="calendar_title_text">Tell me When</string>
