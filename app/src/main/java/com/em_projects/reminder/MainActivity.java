@@ -44,6 +44,12 @@ import com.em_projects.reminder.ui.widgets.ringtonepicker.RingtonePickerListener
 import com.em_projects.reminder.utils.PreferencesUtils;
 import com.em_projects.reminder.utils.StringUtils;
 import com.em_projects.reminder.utils.TimeUtils;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.reward.RewardItem;
+import com.google.android.gms.ads.reward.RewardedVideoAd;
+import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -61,8 +67,8 @@ import static android.Manifest.permission.RECEIVE_BOOT_COMPLETED;
 
 public class MainActivity extends AppCompatActivity implements
         DatePickerDialog.OnDatePickedListener,
-        TimePickerDialog.OnTimePickedListener {
-
+        TimePickerDialog.OnTimePickedListener,
+        RewardedVideoAdListener {
     private static final String TAG = "MainActivity";
 
     private static final int PERM_REQUEST_CODE_DRAW_OVERLAYS = 123;
@@ -142,13 +148,25 @@ public class MainActivity extends AppCompatActivity implements
 
     private EventsDbHandler dbHandler;
 
+    // AdMov
+    private AdView adView;
+    private RewardedVideoAd rewardedVideoAd;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         context = this;
+        MobileAds.initialize(this, getString(R.string.banner_ad_unit_id_reward));
+
+        adView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
+
+        // Use an activity context to get the rewarded video instance.
+        rewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this);
+        rewardedVideoAd.setRewardedVideoAdListener(this);
 
         subjectEditText = findViewById(R.id.subjectEditText);
         showAlertsImageButton = findViewById(R.id.showAlertsImageButton);
@@ -179,6 +197,8 @@ public class MainActivity extends AppCompatActivity implements
         saveButton = findViewById(R.id.saveButton);
         cancelButton = findViewById(R.id.cancelButton);
 
+        loadRewardedVideoAd();
+
         // Check permissions
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!checkPermissions()) {
@@ -194,6 +214,7 @@ public class MainActivity extends AppCompatActivity implements
     private void continueAppLoading() {
         initializeView();
         dbHandler = EventsDbHandler.getInstance(this);
+        showRewardedVideo();
     }
 
     private void initAlarms() {
@@ -671,6 +692,83 @@ public class MainActivity extends AppCompatActivity implements
         this.day = calendar.get(Calendar.DAY_OF_MONTH);
         this.month = calendar.get(Calendar.MONTH);
         this.year = calendar.get(Calendar.YEAR);
+    }
+
+    private void showRewardedVideo() {
+        if (rewardedVideoAd.isLoaded()) {
+            rewardedVideoAd.show();
+        }
+    }
+
+    // ADMov
+    private void loadRewardedVideoAd() {
+        rewardedVideoAd.loadAd(getString(R.string.banner_ad_unit_id_reward),
+                new AdRequest.Builder().build());
+    }
+
+
+    // ***   RewardedVideoAdListener implementation
+    @Override
+    public void onRewarded(RewardItem reward) {
+        Toast.makeText(this, "onRewarded! currency: " + reward.getType() + "  amount: " +
+                reward.getAmount(), Toast.LENGTH_SHORT).show();
+        // Reward the user.
+    }
+
+    @Override
+    public void onRewardedVideoAdLeftApplication() {
+        Toast.makeText(this, "onRewardedVideoAdLeftApplication",
+                Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRewardedVideoAdClosed() {
+        Toast.makeText(this, "onRewardedVideoAdClosed", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRewardedVideoAdFailedToLoad(int errorCode) {
+        Toast.makeText(this, "onRewardedVideoAdFailedToLoad", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRewardedVideoAdLoaded() {
+        Toast.makeText(this, "onRewardedVideoAdLoaded", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRewardedVideoAdOpened() {
+        Toast.makeText(this, "onRewardedVideoAdOpened", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRewardedVideoStarted() {
+        Toast.makeText(this, "onRewardedVideoStarted", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRewardedVideoCompleted() {
+        Toast.makeText(this, "onRewardedVideoCompleted", Toast.LENGTH_SHORT).show();
+    }
+    // ***  RewardedVideoAdListener implementation
+
+
+    @Override
+    public void onResume() {
+        rewardedVideoAd.resume(this);
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        rewardedVideoAd.pause(this);
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        rewardedVideoAd.destroy(this);
+        super.onDestroy();
     }
 
     @TargetApi(Build.VERSION_CODES.M)
