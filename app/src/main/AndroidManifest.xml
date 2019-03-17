@@ -54,5 +54,10 @@
             android:windowSoftInputMode="stateHidden"
             android:theme="@style/myDialogTheme" />
 
+        <!-- AdMob Meta data -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-4376965998620656~4770310259" />
+
     </application>
 </manifest>

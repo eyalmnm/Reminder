@@ -45,7 +45,6 @@ import com.em_projects.reminder.utils.PreferencesUtils;
 import com.em_projects.reminder.utils.StringUtils;
 import com.em_projects.reminder.utils.TimeUtils;
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.reward.RewardItem;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
@@ -64,6 +63,8 @@ import static android.Manifest.permission.RECEIVE_BOOT_COMPLETED;
 // Ref: https://www.androidhive.info/2016/11/android-floating-widget-like-facebook-chat-head/
 // Ref: https://www.sitepoint.com/animating-android-floating-action-button/
 // Ref: http://stacktips.com/tutorials/android/repeat-alarm-example-in-android
+// Ref: https://developers.google.com/admob/android/test-ads
+
 
 public class MainActivity extends AppCompatActivity implements
         DatePickerDialog.OnDatePickedListener,
@@ -149,7 +150,6 @@ public class MainActivity extends AppCompatActivity implements
     private EventsDbHandler dbHandler;
 
     // AdMov
-    private AdView adView;
     private RewardedVideoAd rewardedVideoAd;
 
 
@@ -158,13 +158,12 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         context = this;
+
+        // Initialize the Google Mobile Ads SDK
         MobileAds.initialize(this, getString(R.string.banner_ad_unit_id_reward));
 
-        adView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        adView.loadAd(adRequest);
-
         // Use an activity context to get the rewarded video instance.
+        // Get reference to singleton RewardedVideoAd object
         rewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this);
         rewardedVideoAd.setRewardedVideoAdListener(this);
 
@@ -214,7 +213,7 @@ public class MainActivity extends AppCompatActivity implements
     private void continueAppLoading() {
         initializeView();
         dbHandler = EventsDbHandler.getInstance(this);
-        showRewardedVideo();
+//        showRewardedVideo();
     }
 
     private void initAlarms() {
@@ -496,6 +495,7 @@ public class MainActivity extends AppCompatActivity implements
                 Event event = createEvent();
                 dbHandler.addEvent(event);
                 addToAlarmManager(context, event, Integer.parseInt(event.getId()));
+                showRewardedVideo();
                 finish();
             }
         });
@@ -712,7 +712,7 @@ public class MainActivity extends AppCompatActivity implements
     public void onRewarded(RewardItem reward) {
         Toast.makeText(this, "onRewarded! currency: " + reward.getType() + "  amount: " +
                 reward.getAmount(), Toast.LENGTH_SHORT).show();
-        // Reward the user.
+        // TODO Reward the user.
     }
 
     @Override
@@ -728,6 +728,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onRewardedVideoAdFailedToLoad(int errorCode) {
+        Log.e(TAG, "onRewardedVideoAdFailedToLoad errorCode: " + errorCode);
         Toast.makeText(this, "onRewardedVideoAdFailedToLoad", Toast.LENGTH_SHORT).show();
     }
 
