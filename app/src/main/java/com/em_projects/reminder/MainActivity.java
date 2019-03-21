@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements
         context = this;
 
         // Initialize the Google Mobile Ads SDK
-        MobileAds.initialize(this, getString(R.string.banner_ad_unit_id_reward));
+        MobileAds.initialize(this, getString(R.string.banner_ad_unit_id_reward_test));
 
         // Use an activity context to get the rewarded video instance.
         // Get reference to singleton RewardedVideoAd object
@@ -489,6 +489,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
+        // https://developers.google.com/admob/android/test-ads
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -496,7 +497,6 @@ public class MainActivity extends AppCompatActivity implements
                 dbHandler.addEvent(event);
                 addToAlarmManager(context, event, Integer.parseInt(event.getId()));
                 showRewardedVideo();
-                finish();
             }
         });
 
@@ -702,7 +702,7 @@ public class MainActivity extends AppCompatActivity implements
 
     // ADMov
     private void loadRewardedVideoAd() {
-        rewardedVideoAd.loadAd(getString(R.string.banner_ad_unit_id_reward),
+        rewardedVideoAd.loadAd(getString(R.string.banner_ad_unit_id_reward_test),
                 new AdRequest.Builder().build());
     }
 
@@ -710,8 +710,8 @@ public class MainActivity extends AppCompatActivity implements
     // ***   RewardedVideoAdListener implementation
     @Override
     public void onRewarded(RewardItem reward) {
-        Toast.makeText(this, "onRewarded! currency: " + reward.getType() + "  amount: " +
-                reward.getAmount(), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "onRewarded! currency: " + reward.getType() + "  amount: " +
+//                reward.getAmount(), Toast.LENGTH_SHORT).show();
         // TODO Reward the user.
     }
 
@@ -729,27 +729,29 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onRewardedVideoAdFailedToLoad(int errorCode) {
         Log.e(TAG, "onRewardedVideoAdFailedToLoad errorCode: " + errorCode);
-        Toast.makeText(this, "onRewardedVideoAdFailedToLoad", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "onRewardedVideoAdFailedToLoad", Toast.LENGTH_SHORT).show();
+        finish();
     }
 
     @Override
     public void onRewardedVideoAdLoaded() {
-        Toast.makeText(this, "onRewardedVideoAdLoaded", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "onRewardedVideoAdLoaded", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onRewardedVideoAdOpened() {
-        Toast.makeText(this, "onRewardedVideoAdOpened", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "onRewardedVideoAdOpened", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onRewardedVideoStarted() {
-        Toast.makeText(this, "onRewardedVideoStarted", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "onRewardedVideoStarted", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onRewardedVideoCompleted() {
-        Toast.makeText(this, "onRewardedVideoCompleted", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "onRewardedVideoCompleted", Toast.LENGTH_SHORT).show();
+        finish();
     }
     // ***  RewardedVideoAdListener implementation
 
