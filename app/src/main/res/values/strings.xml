@@ -3,7 +3,12 @@
 
     <!-- Ad Mov -->
     <string name="banner_ad_unit_id">ca-app-pub-4376965998620656~4770310259</string>
+
+    <!-- App Unit Id -->
     <string name="banner_ad_unit_id_reward">ca-app-pub-4376965998620656/5415632922</string>
+
+    <!-- Test Unit Id -->
+    <string name="banner_ad_unit_id_reward_test">ca-app-pub-3940256099942544/5224354917</string>
 
     <!-- MainActivity -->
     <string name="subject_et_hint">What should I remind you?</string>

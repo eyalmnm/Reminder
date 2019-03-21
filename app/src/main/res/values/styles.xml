@@ -9,6 +9,10 @@
         <item name="android:fontFamily">@font/caveat</item>
     </style>
 
+    <style name="SplashScreen" parent="AppTheme">
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
     <style name="TextLabel" parent="TextAppearance.AppCompat">
         <!-- Hint color and label color in FALSE state -->
         <item name="android:textColorHint">@color/textColorPrimary</item>
