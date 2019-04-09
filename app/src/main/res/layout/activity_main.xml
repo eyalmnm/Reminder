@@ -8,14 +8,14 @@
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:padding="10dp">
 
         <ImageButton
             android:id="@+id/showAlertsImageButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:src="@drawable/ic_event_available_black_24dp"
             android:visibility="invisible" />
 
@@ -24,10 +24,10 @@
             style="@style/activityMainTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_marginBottom="5dp"
             android:layout_marginTop="4dp"
-            android:layout_toLeftOf="@id/showAlertsImageButton"
+            android:layout_toStartOf="@id/showAlertsImageButton"
             android:focusableInTouchMode="true"
             android:fontFamily="@font/caveat"
             android:hint="@string/subject_et_hint"
@@ -61,7 +61,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="100"
-                android:gravity="left|center_vertical"
+                android:gravity="start|center_vertical"
                 android:text="current date"
                 android:textSize="20sp"
                 app:custom_font="caveat_regular" />
@@ -72,9 +72,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="50"
-                android:gravity="right|center_vertical"
+                android:gravity="end|center_vertical"
                 android:text="time"
-                android:textSize="20dp"
+                android:textSize="20sp"
                 app:custom_font="caveat_regular" />
         </LinearLayout>
 
@@ -214,7 +214,7 @@
                     android:inputType="text"
                     android:maxLines="1" />
 
-                <com.em_projects.reminder.ui.custom_text.CustomTextView
+                <!--com.em_projects.reminder.ui.custom_text.CustomTextView
                     android:id="@+id/animationPreviewButton"
                     style="@style/activityMainTextStyle"
                     android:layout_width="0dp"
@@ -224,7 +224,7 @@
                     android:padding="2dp"
                     android:text="@string/animation_preview_button_text"
                     android:textSize="20sp"
-                    app:custom_font="caveat_regular" />
+                    app:custom_font="caveat_regular" /-->
             </LinearLayout>
 
         </LinearLayout>
@@ -304,7 +304,6 @@
                 style="@style/activityMainTextStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/eventAlertRepeat"
                 android:layout_marginTop="20dp"
                 android:text="@string/add_sound_to_alert"
                 app:custom_font="caveat_regular" />
@@ -325,9 +324,9 @@
         <com.em_projects.reminder.ui.custom_text.CustomButton
             android:id="@+id/saveButton"
             style="@style/activityMainTextStyle"
-            android:layout_width="120dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_below="@id/addNoiseView"
             android:layout_marginTop="20dp"
             android:padding="2dp"
@@ -335,12 +334,26 @@
             app:custom_font="caveat_regular" />
 
         <com.em_projects.reminder.ui.custom_text.CustomButton
-            android:id="@+id/cancelButton"
+            android:id="@+id/animationPreviewButton"
             style="@style/activityMainTextStyle"
-            android:layout_width="120dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@id/saveButton"
-            android:layout_alignParentRight="true"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:padding="2dp"
+            android:text="@string/animation_preview_button_text"
+            android:textSize="20sp"
+            app:custom_font="caveat_regular" />
+
+
+        <com.em_projects.reminder.ui.custom_text.CustomButton
+            android:id="@+id/cancelButton"
+            style="@style/activityMainTextStyle"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/saveButton"
+            android:layout_alignParentEnd="true"
             android:padding="2dp"
             android:text="@string/cancel"
             app:custom_font="caveat_regular" />

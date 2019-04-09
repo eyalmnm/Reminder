@@ -27,7 +27,6 @@ import com.em_projects.reminder.adapters.SpinnerAdapter;
 import com.em_projects.reminder.alarm_mngr.AlarmManagerHelper;
 import com.em_projects.reminder.alerts_data.AlertsListActivity;
 import com.em_projects.reminder.config.Data;
-import com.em_projects.reminder.dialogs.AnimationPreviewDialog;
 import com.em_projects.reminder.externals.ReminderAlarmManagerService;
 import com.em_projects.reminder.fragments.DatePickerDialog;
 import com.em_projects.reminder.fragments.TimePickerDialog;
@@ -64,6 +63,7 @@ import static android.Manifest.permission.RECEIVE_BOOT_COMPLETED;
 // Ref: https://www.sitepoint.com/animating-android-floating-action-button/
 // Ref: http://stacktips.com/tutorials/android/repeat-alarm-example-in-android
 // Ref: https://developers.google.com/admob/android/test-ads
+// Ref: https://stackoverflow.com/questions/12421444/how-to-format-a-number-0-9-to-display-with-2-digits-its-not-a-date
 
 
 public class MainActivity extends AppCompatActivity implements
@@ -132,17 +132,17 @@ public class MainActivity extends AppCompatActivity implements
     private long eventTimeBeforeSec;
 
     private Spinner animationSelectionSpinner;
-    private CustomTextView animationPreviewButton;
     private String animationName;
 
     private RadioGroup alertRepeatOptionsRadioGroup;
     private long alertsInterval;
 
-    //    private CustomCheckBox addSoundIndicator;
+    // private CustomCheckBox addSoundIndicator;
     private CustomTextView soundSelectionTextView;
     private String tuneName;
 
     private CustomButton saveButton;
+    private CustomButton animationPreviewButton;
     private CustomButton cancelButton;
 
     private Context context;
@@ -182,7 +182,6 @@ public class MainActivity extends AppCompatActivity implements
         eventTimeBeforeSpinner = findViewById(R.id.eventTimeBeforeSpinner);
 
         animationSelectionSpinner = findViewById(R.id.animationSelectionSpinner);
-        animationPreviewButton = findViewById(R.id.animationPreviewButton);
 
         alertRepeatOptionsRadioGroup = findViewById(R.id.alertRepeatOptionsRadioGroup);
         CustomRadioButton everyFiveMinuteRadioButton = findViewById(R.id.everyFiveMinuteRadioButton);
@@ -194,6 +193,7 @@ public class MainActivity extends AppCompatActivity implements
 //        soundSelectionTextView.setVisibility(View.INVISIBLE);
 
         saveButton = findViewById(R.id.saveButton);
+        animationPreviewButton = findViewById(R.id.animationPreviewButton);
         cancelButton = findViewById(R.id.cancelButton);
 
         loadRewardedVideoAd();
@@ -248,7 +248,7 @@ public class MainActivity extends AppCompatActivity implements
         });
 
         Resources resource = context.getResources();
-        ArrayList<String> durationOptions = new ArrayList<String>(Arrays.asList(resource.getStringArray(R.array.duration_options)));
+        ArrayList<String> durationOptions = new ArrayList<>(Arrays.asList(resource.getStringArray(R.array.duration_options)));
         SpinnerAdapter eventDurationSpinnerAdapter = new SpinnerAdapter(this, R.layout.layout_spinner_view, durationOptions);
         eventDurationSpinner.setAdapter(eventDurationSpinnerAdapter);
         eventDurationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -294,7 +294,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
         eventHoursDurationSpinner.setVisibility(View.INVISIBLE);
-        final ArrayList<String> durationInHoursOptions = new ArrayList<String>(Arrays.asList(resource.getStringArray(R.array.duration_in_hours_options)));
+        final ArrayList<String> durationInHoursOptions = new ArrayList<>(Arrays.asList(resource.getStringArray(R.array.duration_in_hours_options)));
         SpinnerAdapter eventDurationInHoursSpinnerAdapter = new SpinnerAdapter(this, R.layout.layout_spinner_view, durationInHoursOptions);
         eventHoursDurationSpinner.setAdapter(eventDurationInHoursSpinnerAdapter);
         eventHoursDurationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -495,8 +495,10 @@ public class MainActivity extends AppCompatActivity implements
             public void onClick(View v) {
                 Event event = createEvent();
                 dbHandler.addEvent(event);
-                addToAlarmManager(context, event, Integer.parseInt(event.getId()));
-                showRewardedVideo();
+                if (event != null) {
+                    addToAlarmManager(context, event, Integer.parseInt(event.getId()));
+                    showRewardedVideo();
+                }
             }
         });
 
@@ -645,14 +647,14 @@ public class MainActivity extends AppCompatActivity implements
 //        //startService(intent);
 //    }
 
-    private void showAnimationPreviewDialog(String animationName) {
-        Bundle args = new Bundle();
-        args.putString(DbConstants.EVENTS_ANIMATION_NAME, animationName);
-        FragmentManager fm = getFragmentManager();
-        AnimationPreviewDialog dialog = new AnimationPreviewDialog();
-        dialog.setArguments(args);
-        dialog.show(fm, "AnimationPreviewDialog");
-    }
+//    private void showAnimationPreviewDialog(String animationName) {
+//        Bundle args = new Bundle();
+//        args.putString(DbConstants.EVENTS_ANIMATION_NAME, animationName);
+//        FragmentManager fm = getFragmentManager();
+//        AnimationPreviewDialog dialog = new AnimationPreviewDialog();
+//        dialog.setArguments(args);
+//        dialog.show(fm, "AnimationPreviewDialog");
+//    }
 
 
     private void openTimePickerDialog() {
@@ -666,15 +668,10 @@ public class MainActivity extends AppCompatActivity implements
         // TODO Store this values
         this.hour = hours;
         this.minute = minutes;
-        String hoursStr = String.valueOf(hours);
-        String minutesStr = String.valueOf(minutes);
-        if (10 > hours) {
-            hoursStr = "0" + hoursStr;
-        }
-        if (10 > minutes) {
-            minutesStr = "0" + minutesStr;
-        }
-        timeTextView.setText(hoursStr + ":" + minutesStr);
+        String hoursStr = String.format("%02d", hours);
+        String minutesStr = String.format("%02d", minutes);
+        String msg = hoursStr + ":" + minutesStr;
+        timeTextView.setText(msg);
     }
 
     private void openDatePickerDialog() {
