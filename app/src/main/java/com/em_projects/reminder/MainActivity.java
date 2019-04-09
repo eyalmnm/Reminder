@@ -137,7 +137,6 @@ public class MainActivity extends AppCompatActivity implements
     private RadioGroup alertRepeatOptionsRadioGroup;
     private long alertsInterval;
 
-    // private CustomCheckBox addSoundIndicator;
     private CustomTextView soundSelectionTextView;
     private String tuneName;
 
@@ -188,9 +187,7 @@ public class MainActivity extends AppCompatActivity implements
         everyFiveMinuteRadioButton.setChecked(true);
         alertsInterval = 5 * MINUTE_MILLIS;
 
-//        addSoundIndicator = findViewById(R.id.addSoundIndicator);
         soundSelectionTextView = findViewById(R.id.soundSelectionTextView);
-//        soundSelectionTextView.setVisibility(View.INVISIBLE);
 
         saveButton = findViewById(R.id.saveButton);
         animationPreviewButton = findViewById(R.id.animationPreviewButton);
@@ -213,7 +210,6 @@ public class MainActivity extends AppCompatActivity implements
     private void continueAppLoading() {
         initializeView();
         dbHandler = EventsDbHandler.getInstance(this);
-//        showRewardedVideo();
     }
 
     private void initAlarms() {
@@ -463,25 +459,11 @@ public class MainActivity extends AppCompatActivity implements
         animationPreviewButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //runAnimation(true);
-                //showAnimationPreviewDialog(animationName);
                 showEventOnScreen();
             }
         });
         animationName = animationOptions.get(0);
 
-//        addSoundIndicator.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                if (true == isChecked) {
-//                    soundSelectionTextView.setVisibility(View.VISIBLE);
-//                } else {
-//                    soundSelectionTextView.setVisibility(View.INVISIBLE);
-//                    soundSelectionTextView.setText(null);
-//                    tuneName = null;
-//                }
-//            }
-//        });
         soundSelectionTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -505,7 +487,6 @@ public class MainActivity extends AppCompatActivity implements
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //runAnimation(false);
                 finish();
             }
         });
@@ -618,9 +599,6 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-        //set the currently selected uri, to mark that ringtone as checked by default. (Optional)
-        //ringtonePickerBuilder.setCurrentRingtoneUri(mCurrentSelectedUri);
-
         //Display the dialog.
         ringtonePickerBuilder.show();
     }
@@ -629,33 +607,6 @@ public class MainActivity extends AppCompatActivity implements
         Intent intent = ReminderAlarmManagerService.createIntentFromEvent(context, event);
         AlarmManagerHelper.registerAlert(context, intent, requestId);
     }
-
-//    private ArrayList<String> generateSoundsOption() {
-//        ArrayList<String> soundOptions = new ArrayList<>();
-//        soundOptions.add("silence");
-//        soundOptions.addAll(getRingTones());
-//        return soundOptions;
-//    }
-
-//    private void runAnimation(boolean isPreview) {
-//        Intent intent = new Intent(this, FloatingLayoutService.class);
-//        String subject = subjectEditText.getText().toString();
-//        if (true == StringUtils.isNullOrEmpty(subject)) subject = "Empty Subject";
-//        intent.putExtra(DbConstants.EVENTS_SUBJECT, subject);
-//        intent.putExtra("isPreview", isPreview);
-//        intent.putExtra(DbConstants.EVENTS_ANIMATION_NAME, animationName);
-//        //startService(intent);
-//    }
-
-//    private void showAnimationPreviewDialog(String animationName) {
-//        Bundle args = new Bundle();
-//        args.putString(DbConstants.EVENTS_ANIMATION_NAME, animationName);
-//        FragmentManager fm = getFragmentManager();
-//        AnimationPreviewDialog dialog = new AnimationPreviewDialog();
-//        dialog.setArguments(args);
-//        dialog.show(fm, "AnimationPreviewDialog");
-//    }
-
 
     private void openTimePickerDialog() {
         FragmentManager fragmentManager = getFragmentManager();
@@ -707,8 +658,6 @@ public class MainActivity extends AppCompatActivity implements
     // ***   RewardedVideoAdListener implementation
     @Override
     public void onRewarded(RewardItem reward) {
-//        Toast.makeText(this, "onRewarded! currency: " + reward.getType() + "  amount: " +
-//                reward.getAmount(), Toast.LENGTH_SHORT).show();
         // TODO Reward the user.
     }
 
@@ -726,28 +675,23 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onRewardedVideoAdFailedToLoad(int errorCode) {
         Log.e(TAG, "onRewardedVideoAdFailedToLoad errorCode: " + errorCode);
-//        Toast.makeText(this, "onRewardedVideoAdFailedToLoad", Toast.LENGTH_SHORT).show();
         finish();
     }
 
     @Override
     public void onRewardedVideoAdLoaded() {
-//        Toast.makeText(this, "onRewardedVideoAdLoaded", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onRewardedVideoAdOpened() {
-//        Toast.makeText(this, "onRewardedVideoAdOpened", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onRewardedVideoStarted() {
-//        Toast.makeText(this, "onRewardedVideoStarted", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onRewardedVideoCompleted() {
-//        Toast.makeText(this, "onRewardedVideoCompleted", Toast.LENGTH_SHORT).show();
         finish();
     }
     // ***  RewardedVideoAdListener implementation
@@ -800,10 +744,8 @@ public class MainActivity extends AppCompatActivity implements
 
                     if (bootRes && readXstorage) {
                         if (Settings.canDrawOverlays(context)) {
-                            //Toast.makeText(context, "Permission Granted, Now you can use the application.", Toast.LENGTH_LONG).show();
                             continueAppLoading();
                         } else {
-                            //Toast.makeText(context, "Permission Denied, You cannot access the application.", Toast.LENGTH_LONG).show();
                             permissionToDrawOverlays();
                         }
                     } else {
